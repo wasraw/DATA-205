@@ -1,0 +1,1163 @@
+---
+title: "ABS Buying Patterns Project"
+author: "A Warsaw"
+format: html
+editor: visual
+---
+
+# Purpose
+
+To determine a better methodology for observing the buying patterns between different locations, I would like to consider the potential demographic patterns in all corresponding locations to see if there are any major factors encouraging the purchases of merchandise such as:
+
+-   Sharp incline in purchase of specific merchandise due to seasonal events that will motivate such behavior including holidays, school (college) vacations, and work vacations
+
+-   Cultural bias (race, gender, religion)
+
+-   Socioeconomic bias (different purchasing patterns between different financial brackets)
+
+To do so, I would like to observe each of the following listed by gaining analytics as closely accurate as possible through data Montgomery to determine if there are any correlating factors occuring between the mentioned factors and the provided data set, holding over 12 million observations.
+
+## Stores to be Observed
+
+For my observations, I will be researching information for the following locations:
+
+-   Aspen Hill (store 28)
+-   Burtonsville (store 8)
+-   Cabin John (store 12)
+-   Clarksburg Village (store 3)
+-   Cloverly (store 10)
+-   Darnestown (store 20)
+-   Downtown Rockville (store 27)
+-   Fallsgrove (store 21)
+-   Flower (store 7)
+-   Gaithersburg Square (store 30)
+-   Goshen Crossing (store 17)
+-   Hampden Lane (store 23)
+-   Kensington (store 14)
+-   King Farm (store 26)
+-   Kingsview (store 6)
+-   Leisure World (store 13)
+-   Montrose (store 24)
+-   Muddy Branch (store 9)
+-   Olney (store 18)
+-   Poolesville (store 29)
+-   Potomac (store 15)
+-   Seneca Meadows (store 16)
+-   Silver Spring (store 2)
+-   Walnut Hill (store 11)
+-   Westbard (store 4)
+-   Wheaton (store 5)
+-   White Oak Town Center (store 22)
+
+It is also important to note that here are 3 tiers of designations for all 27 stores (Tiers A, B, and C) which is used to categorize the stores by their corresponding size:
+
+-   Tier A is for stores with greater than 6000 sq ft
+-   Tier B is for stores between 4000 and 6000 sq ft
+-   Tier C is for stores below 4000 sq ft
+
+These designations are also categorized by their sale performance (based on a scale created in 2022) from rank 1 to 3 where:
+
+-   Rank 1 is for stores performing greater than \$8 million in the SY
+-   Rank 2 is for stores performing between \$5 and \$8 million in the SY
+-   Rank 3 is for stores who perform less than \$5 million in the SY
+
+So all 27 stores are identified by both a Tier and Rank. I have listed below every store with their corresponding Tiers and Rank in descending order:
+
+Tier ‘A’: - Seneca Meadows (Store #16) A1 - Muddy Branch (Store #09) A1 - Damestown (Store #20) A1 - Leisure World (Store #13) A2 - Kingsview (Store #06) A2 - Goshen Crossing (Store #17) A2 - Downtown Rockville (Store #27) A2 - Clarksburg Village (Store #03) A2 - Aspen Hill (Store #28) A2 - Gaithersburg (Store #30) A3 - Cloverly (Store #10) A3 Tier ‘B’: - Hampden Lane (Store #23) B1 - Kensington (Store #14) B1 - Montrose (Store #24) B1 - Westbard (Store #04) B1 - Silver Spring (Store #02) B2 - Walnut Hill (Store #11) B2 - Burtonsvile (Store #08) B3 - Cabin John (Store #12) B3 - White Oak Town Center (Store #22) B3 Tier ‘C’: - Potomac (Store #15) C1 - Olney (Store #18) C2 - Wheaton (Store #05) C2 - Fallsgrove (Store #21) C3 - Flower (Store #07) C3 - King Farm (Store #26) C3 - Poolesville (Store #29) C3
+
+## About the Data Set
+
+There are a total of 18 variables and roughly 12 million observations provided in the transactions data set provided by ABS, which I will provided a breakdown of below. However, there will also be additional variables that I will also include for this data set and will be using throughout this project which will be mentioned here.
+
+Variables originally included in the data set:
+
+-   transdate: This is the physical date that the transaction took place. ABS has provided transactions starting from July 1, 2023 to June 30, 2025 (roughly 2 years worth of data)
+-   transactionid: This is a unique identifier for each individual transaction (likely to not be used for this project)
+-   store: This is the store number where the transaction took place
+-   storename: This is the formatted store name where the transaction tool place
+-   itemid: This is the unique identifier for products. Item dimension attributes do not change. If an item’s pack unit or bottles per case changes a new code is created.
+-   description: This is the product description
+-   netamount: This is the total cost of the line item / product purchased (discounts included) without tax
+-   lineqty: This is quantity sold of each individual line item in a transaction. So if 3 bottles of wine were sold, this would be 3. If 2 6-packs were sold, this would be 2
+-   packunit: This is the selling unit for the line item. This is the unit as how the product was sold. This would either be Btl (single bottle) or 4pk, 6pk, etc. Some lines may only show 04 or 06 and this relates to 4pk or 6pk. This is more to show the calculation of the totalqty column, which represents how many actual bottles were sold to a customer
+-   totalqty: This is the total quantity of items sold for that line item. (Line quantity \* pack unit)
+-   itemtag: This is the warehouse designation inventory tag. Some items may be NULL as tags are updated on a daily basis and at the time this data set was taken offline, it may have converted some TAGS to NULL. (note that I will only be observing itemtags that identify as "ST", which is Standard Stock)
+-   tagdesc: This is the formatted description of the warehouse inventory tags
+-   classificationdepartment: This is the department the product belongs too (Level 1). The only departments are BEER, WINE, LIQ, MISC.
+-   classifictiontype – This is the group type the product belongs too (Level 2). This references the type of product within the department. Ie: LIQ \> WHISKEY
+-   classificationcategory – This is the group category the product belongs too (Level 3). This further references the category within the type of items. Ie LIQ \> WHISKEY \> IRISH WHISKEY.
+-   bottlespercase – This is the total number of bottles in a case. This is important for our warehouse partners when calculating overall case volume of an item. totalqty / bottlespercase = Case(s) sold
+-   size: This is the size of the product. There are standard sizes of many products and often one size of a product will outperform another for a variety of reasons. Ie 750mL vs 1.75L
+-   custaccount: This designates if the transaction was for a retail/public customer or a licensee (This will only be used to filter out all licensee transactions as I will only be observing public customers)
+
+Variables added into the data set:
+
+-   transdate2: This is used as a separately formatted date variable for visualization purposes upon cleaning the data set
+-   year: Another created variable used for observational purposes to organize the data set specifically by year
+-   storesizecat: This is added for observing the data by the store size categorization created by ABS, only "A", "B", or "C" will populate the rows corresponding to its respective store in a given transaction
+-   storetiercat: This is added for observing the data by the stores financial performance based on ABS' parameters, only showing "1", "2", or "3" in the rows corresponding to its respective store in a given transaction
+-   cost: raw cost of a given transaction (not including tax) based on netamount / lineqty
+
+## Data Preparation
+
+Before beginning my analysis, I will be preparing my libraries, loading in my data set, and also doing all necessary cleaning below.
+
+```{r,message=FALSE,warning=FALSE}
+library(MASS)
+library(tidyverse)
+library(DataExplorer)
+library(odbc)
+library(DBI)
+library(RSQLite)
+library(mgcv)
+```
+
+```{r,message=FALSE,warning=FALSE}
+abs_observed <- read_csv("TransactionData_UTF8.txt")
+```
+
+```{r}
+#Setup for the storesizecat and storetiercat variables
+stores_A <- c(03, 06, 09, 10, 13, 16, 17, 20, 27, 28, 30)
+stores_B <- c(02, 04, 08, 11, 12, 14, 22, 23, 24)
+stores_C <- c(05, 07, 15, 18, 21, 26, 29)
+tier1 <- c(04, 09, 14, 15, 16, 20, 23, 24)
+tier2 <- c(02, 03, 05, 06, 11, 13, 17, 18, 27, 28)
+tier3 <- c(07, 08, 10, 12, 21, 22, 26, 29, 30)
+
+names(abs_observed) <- tolower(names(abs_observed)) #making all variables lowercase
+#cleaning the store variable so that R recognizes it as intended
+abs_observed$store <- as.character(as.integer(abs_observed$store))
+abs_observed$store <- as.numeric(abs_observed$store)
+
+abs_observed <- abs_observed |>
+  filter(custaccount != "Licensee") |> #removing licensee transactions
+  filter(itemtag == "ST") |> #removing all non-Standard stock transactions
+  mutate(storesizecat = case_when(
+  store %in% stores_A ~ "A",
+  store %in% stores_B ~ "B",
+  store %in% stores_C ~ "C",
+  TRUE ~ NA_character_)) |>
+  mutate(storetiercat = case_when(
+  store %in% tier1 ~ "1",
+  store %in% tier2 ~ "2",
+  store %in% tier3 ~ "3")) |>
+  filter(lineqty > 0 ) |> # filtering out transactions that were either voided or refunded
+  filter(netamount > 0) #filtering out transactions that were either voided or refunded
+
+# Creating cost, transdate2, and year variables
+abs_observed$cost <- abs_observed$netamount / abs_observed$lineqty
+abs_observed$transdate2 <- as.Date(abs_observed$transdate)
+abs_observed$year <- format(abs_observed$transdate2, "%Y")
+```
+
+```{r}
+options(scipen = 999) #converting all visualizations from scientific notation to standard (as it likely will show up in scientific notation)
+```
+
+## Observing the Data Set by the Three Levels of Classifications
+
+There are three variables mentioned earlier (**classificationdepartment**, **classifcationtype**, and **classificationcategory**) that I would like to start with observing, as I would like to see the distribution of transactions based on those levels for all 27 locations. This should help give me a general idea of how different inventory are performing between the locations to determine if there are any notable differences.
+
+to do so, I will create a new tibble named **abs_classdeptcount** where I will include a new variable **count** which counts the frequency of the corresponding classification department transactions in the main data set
+
+```{r}
+abs_classdeptcount <- abs_observed |>
+  group_by(store, classificationdepartment) |>
+  summarise(count = n(), .groups = "drop") |>
+  arrange(store)
+```
+
+```{r}
+ggplot(abs_classdeptcount, aes(x = store, y = count,  fill = classificationdepartment)) +
+  geom_col() +
+  labs(title = "Inventory Performance of All Stores by Classification Dept (2023-2025)",
+       x = "Store",
+       y = "Frequency",
+       fill = "Classification Department",
+       caption = "Source: Montgomery County ABS") +
+  theme_bw() +
+  coord_flip() +
+  scale_x_continuous(breaks = seq(min(abs_classdeptcount$store), max(abs_classdeptcount$store), by = 1)) #To show ticks for every store
+```
+
+From this it is clear that the liquor classification department dominates among all stores, with wine coming in second, beer in third, and miscellaneous last. Though this is not a major surprise, it does give a good basis on how generally every store (for the most part) follows the same popularity distribution of liquor \> Wine \> Beer \> Misc. There are a few outliers, like store 29 (Poolesville), which appears to only hold liquor sales. This may speak to why it is on the lowest scale of ABS' method of observing buying patterns (that being that this store is C3). Or it could be that due to the store previous low performance with inventory of other departments ABS has only made liquor available in said location. It is possible, though, that with further observation of the stores by classification will give more context.
+
+Before doing any deeper research, I would like to see the performance of the top two performing classification departments: Liquor and Wine, both individually for all 27 locations and collectively to see if the top two performing departments share the same distribution patterns on the individual and collective level. This is to determine if there are any other anomalies among the stores that need to be noted. This will be done by creating another two tibbles, **abs_liquor** and **abs_wine**, where each will also include the **count** variable to accurately count the frequency for all transactions.
+
+```{r}
+abs_liquor <- abs_observed |>
+  group_by(store, classificationdepartment, classificationtype) |>
+  filter(classificationdepartment == "LIQ") |>
+  summarise(count = n(), .groups = "drop") |>
+  arrange(store)
+
+abs_wine <- abs_observed |>
+  group_by(store, classificationdepartment, classificationtype) |>
+  filter(classificationdepartment == "WINE") |>
+  summarise(count = n(), .groups = "drop") |>
+  arrange(store)
+```
+
+### ABS Liquor Distribution Results
+
+```{r}
+abs_liquor |>
+  filter(store == 2) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Silver Spring Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 3) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Clarksburg Village Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 4) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Westbard Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 5) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Wheaton Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 6) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Kingsview Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 7) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Flower Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 8) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Burtonsville Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 9) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Muddy Branch Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 10) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Cloverly Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 11) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Walnut Hill Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 12) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Cabin John Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 13) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Leisure World Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 14) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Kensington Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 15) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Potomac Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 16) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Seneca Meadows Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 17) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Goshen Crossing Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 18) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Olney Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 20) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Darnestown Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 21) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Fallsgrove Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 22) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "White Oak Town Center Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 23) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Hampden Lane Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 24) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Montrose Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 26) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "King Farm Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 27) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Downtown Rockville Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 28) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Aspen Hill Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 29) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Poolesville Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_liquor |>
+  filter(store == 30) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Gaithersburg Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+ggplot(abs_liquor, aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "ABS Liquor Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+```
+
+Generally, when observing liquor by classification type, the distributions all seem to be about the same, with slight differentiations. Thus it is safe to say that there is very little variation between all stores for the top performing classification department.
+
+### ABS Wine Distribution Results
+
+```{r}
+abs_wine |>
+  filter(store == 2) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Silver Spring Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 3) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Clarksburg Village WIne Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 4) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Westbard Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 5) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Wheaton Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 6) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Kingsview Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 7) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Flower Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 8) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Burtonsville Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 9) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Muddy Branch Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 10) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Cloverly Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 11) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Walnut Hill Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 12) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Cabin John Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 13) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Leisure World Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 14) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Kensington Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 15) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Potomac Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 16) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Seneca Meadows Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 17) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Goshen Crossing Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 18) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Olney Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 20) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Darnestown Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 21) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Fallsgrove Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 22) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "White Oak Town Center Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 23) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Hampden Lane Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 24) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Montrose Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 26) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "King Farm Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 27) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Downtown Rockville Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 28) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Aspen Hill Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 29) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Poolesville Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 7.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+abs_wine |>
+  filter(store == 30) |>
+  ggplot(aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "Gaithersburg Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 5.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+
+ggplot(abs_wine |>
+         filter(count > 5000), aes(x = classificationtype, y = count)) +
+  geom_col(position = "dodge") +
+  labs(x = "Classification Type",
+       y = "Frequency",
+       caption = "Source: Montgomery County ABS",
+       title = "ABS Wine Purchase Frequency from 2023-2025 by Classification Type") +
+  theme(axis.text.x = element_text(angle = 90, size = 6.25, vjust = 0.50, hjust = 1)) +
+  scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
+```
+
+The distribution of the wine department by classification type definitely shows a variation based on location. When creating the visualizations I quickly realized that the general distribution of all stores collectively showed a large variety of options by classification type, resulting in a very messy visualization (as you can see from observing the visualizations of each individual store). To fix this, I decided to only show the top 13 performing options by filtering the count to show only options that appear more than 5000 times in the **abs_observed** data set. Outside of that, the biggest outlier is still poolesville, as they only offer sake, which performs very poorly (only being purchased roughly 25 times between 2023-2025).
+
+Due to the wide variety of performance for the wine department, it is clear that not all departments are equal, and thus more observations are needed to determine how ABS' inventory is performing in all locations.
+
+### Using SQL Queries to observe the stores by size and classification
+
+Now I will be using SQL queries to help identify specifics regarding performance in all stores by all three classification levels. To make it easier to observe the results, I will be categorizing the results using the store size method that ABS uses for observing their stores. This will be done by organizing three different tibbles named **TierA_Stores**, **TierB_Stores**, and **TierC_Stores**, which pulls all information from the main data set into the respective tibble based on the corresponding store's size category (by using the **storesizecat** variable). I will then be creating a database for all relevant queries named **abstier.db**.
+
+```{r}
+TierA_Stores <- abs_observed |>
+  dplyr::select(transdate, year, store, storename, itemid, description, netamount, lineqty, packunit, totalqty, itemtag, tagdesc, classificationdepartment, classificationtype, classificationcategory, bottlespercase, size, custaccount) |>
+  group_by(transdate) |>
+  filter(store %in% c(03, 06, 09, 10, 13, 16, 17, 20, 27, 28, 30))
+
+TierB_Stores <- abs_observed |>
+  dplyr::select(transdate, year, store, storename, itemid, description, netamount, lineqty, packunit, totalqty, itemtag, tagdesc, classificationdepartment, classificationtype, classificationcategory, bottlespercase, size, custaccount) |>
+  group_by(transdate) |>
+  filter(store %in% c(02, 04, 08, 11, 12, 14, 22, 23, 24))
+
+TierC_Stores <- abs_observed |>
+  dplyr::select(transdate, year, store, storename, itemid, description, netamount, lineqty, packunit, totalqty, itemtag, tagdesc, classificationdepartment, classificationtype, classificationcategory, bottlespercase, size, custaccount) |>
+  group_by(transdate) |>
+  filter(store %in% c(05, 07, 15, 18, 21, 26, 29))
+```
+
+```{r,message=FALSE}
+abstier.db <- dbConnect(RSQLite::SQLite(), ":memory:")
+copy_to(abstier.db, TierA_Stores)
+copy_to(abstier.db, TierB_Stores)
+copy_to(abstier.db, TierC_Stores)
+copy_to(abstier.db, abs_observed) # Added the main data set just in case
+```
+
+#### Tier A Stores
+
+First this is the performance by Classification Department:
+
+```{sql connection= abstier.db}
+SELECT year, classificationdepartment, COUNT(*) AS quantity
+FROM TierA_Stores
+GROUP BY year, classificationdepartment
+ORDER BY year, quantity DESC
+```
+
+Next by Classification Type:
+
+```{sql connection=abstier.db}
+SELECT year, classificationtype, COUNT(*) AS quantity
+FROM TierA_Stores
+GROUP BY year, classificationtype
+ORDER BY year, quantity DESC
+```
+
+Finally by Classification Category:
+
+```{sql connection=abstier.db}
+SELECT year, classificationcategory, COUNT(*) AS quantity
+FROM TierA_Stores
+GROUP BY year, classificationcategory
+ORDER BY year, quantity DESC
+```
+
+#### Tier B Stores
+
+First this is the performance by Classification Department:
+
+```{sql connection=abstier.db}
+SELECT year, classificationdepartment, COUNT(*) AS quantity
+FROM TierB_Stores
+GROUP BY year, classificationdepartment
+ORDER BY year, quantity DESC
+```
+
+Next by Classification Type:
+
+```{sql connection=abstier.db}
+SELECT year, classificationtype, COUNT(*) AS quantity
+FROM TierB_Stores
+GROUP BY year, classificationtype
+ORDER BY year, quantity DESC
+```
+
+Finally by Classification Category:
+
+```{sql connection=abstier.db}
+SELECT year, classificationcategory, COUNT(*) AS quantity
+FROM TierB_Stores
+GROUP BY year, classificationcategory
+ORDER BY year, quantity DESC
+```
+
+#### Tier C Stores
+
+First this is the performance by Classification Department:
+
+```{sql connection=abstier.db}
+SELECT year, classificationdepartment, COUNT(*) AS quantity
+FROM TierC_Stores
+GROUP BY year, classificationdepartment
+ORDER BY year, quantity DESC
+```
+
+Next by Classification Type:
+
+```{sql connection=abstier.db}
+SELECT year, classificationtype, COUNT(*) AS quantity
+FROM TierC_Stores
+GROUP BY year, classificationtype
+ORDER BY year, quantity DESC
+```
+
+Finally by Classification Category:
+
+```{sql connection=abstier.db}
+SELECT year, classificationcategory, COUNT(*) AS quantity
+FROM TierC_Stores
+GROUP BY year, classificationcategory
+ORDER BY year, quantity DESC
+```
+
+#### Results Overview
+
+Generally, all tiers appear to follow the same trends throughout all years and all levels of classifications. This further proves that inventory performance likely has little to do with store size as tier A, B, and C stores all share generally the same results from 2023-2025. To give a quick rundown of the results I will report the top 5 and lowest 5 performing on all three levels of classification for all three tiers of store size:
+
+Classification Department
+
+• Tier A Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Miscellaneous • Donations • DLC (only in 2024 & 2025) • Non Inventory • Gift Card (only in 2023) • Tier B Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Misc • Donations • Non Inventory • Gift Card (only in 2023) • DLC (only in 2023 & 2025) • Tier C Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Misc • Donations • Non Inventory • Gift Card (only in 2023) • DLC (only in 2023 & 2025)
+
+Classification Type
+
+• Tier A Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Whiskey • Bourbon • 2024 • Vodka • Tequila • Whiskey • Bourbon • Cordials • 2025 (thus far) • Vodka • Tequila • Whiskey • Bourbon • Cordials • Lowest 5 Performing: • 2023 • Soave • Pinotage • St. Emillion • Petite Syrah • IPA • 2024 • Petite Syrah • Grenache • Vermentino • Bordeaux • Agave • 2025 • Bordeaux • Torrontes • Other South African Red • Flavor Gin • Pinotage • (directly above is petite syrah, grenache, vermantino, and Agave) • Tier B Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Bourbon • Cordials • 2024 • Vodka • Tequila • Bourbon • Whiskey • Cordials • 2025 • Vodka • Tequila • Bourbon • Whiskey • Cordials • Lowest 5 Performing: • 2023 • Liebfraumilch • Bianco • St. Emillion • Grenache • Torrontes • 2024 • Vermentino • Other South African Red • Torrontes • Madeira • Bardolino • 2025 • Bardolino • Other South African Red • Flavor Gin • Grenache • Primitivo • Tier C Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Whiskey • Bourbon • 2024 • Vodka • Tequila • Whiskey • Bourbon • Cordials • 2025 • Vodka • Tequila • Bourbon • Whiskey • Cordials • Lowest 5 Performing: • 2023 • Soave • Gamay • Pinotage • Miscast • Bianco • 2024 • Pinotage • Torrontes • Petite Syrah • Bardolino • Liebfraumilch • 2025 • Vermentino • Graves • Bardolino • Petite Syrah • Grenache
+
+Classification Category
+
+• Tier A Stores • Top 5 performing: • 2023 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2024 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2025 • Domestic Vodka • Tequila • American Red • American White • Straight Bourbon Whiskey • Lowest 5 Performing: • 2023 • French Red Wine • 1% Mixers • Malt Based RTD • Indian Whiskey • Greek • 2024 • Indian Whiskey • Sake • Alsatian Wine • Misc Agave Spirit • Greek • 2025 • Georgian Wine • Greek • Indian Whisky • Grappa • Armagnac • Tier B Stores • Top 5 Performing: • 2023 • Domestic Vodka • American Red • American White • Tequila • Straight Bourbon Whiskey • 2024 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2025 • Domestic Vodka • American Red • American White • Tequila • Straight Bourbon Whiskey • Lowest 5 Performing: • 2023 • Store Supplies • Grappa • Indian Whisky • Greek • 1% Mixers • 2024 • Wine Based Seltzers • Grappa • Greek • Indian Whisky • 1% Mixers • 2025 • Greek • Domestic Dessert Wine • 1% Mixers • Georgian Wine • Armagnac • Tier C Stores • Top 5 Performance: • 2023 • Domestic Vodka • American Red • Straight Bourbon Whiskey • Tequila • American White • 2024 • Domestic Vodka • American Red • Tequila • Straight Bourbon Whiskey • American White • 2025 • Domestic Vodka • American Red • Straight Bourbon Whiskey • Tequila • American White • Lowest 5 Performance: • 2023 • 1% Mixers • Indian Whisky • Domestic Dessert Wine • Store Supplies • Grappa • 2024 • Malt Based RTD • Domestic Dessert Wine • 1% Mixers • Sake • Grappa • 2025 • Store Supplies • Armagnac • Misc Agave Spirit • Georgian Wine • 1% Mixers
+
+## Observing the Data Set by Item ID
+
+Now that I have determined that the inventory generally performs the same among all stores, regardless of store size, it further proves that ABS' buying patterns methodology can be upgraded. My idea is for ABS to observe the data by the **itemid**, specifically for standard stock to prevent the variable becoming unusable as when switching from one **itemtag** to another, ABS must change the **itemid** even if it is the same item, so as to have a separate item id for its new tag designation. This is also why it was necessary for me to filter out all results in the main data set to show only standard stock, as this is the variable I will be mainly focusing on for this project. To give an idea of how necessary filtering the data is, before filtering out all transactions that were not standard stock, there were over 12 million observations, now there are roughly 9.7 million. That means that approximately 3 million transactions occur with items under a different item tag, which could likely be the same item under the standard stock, but with a different item id.
+
+To start off, I will be taking 3 samples of the main data set to used for my observation, using a stratified random sample method, grabbing first 10% of the data from each year from the main data set as one sample(named **transaction_sample10**), a 5% sample from each year as my second sample(named **transaction_sample05**), and a 1% sample from each year as my final sample(named **transaction_sample01**), all with replacement. The purpose of three different samples of different sizes is to observe any potential trends across the years and across all stores. I will be creating a new category for use to assist in my analysis named **priority** which I will further explain below:
+
+-   priority: This is an experimental variable for observing the itemid variable by frequency of transactions to determine if it is a "High", "Medium", or "Low" priority item. High priority merchandise are frequently purchased items in the upper 25% of all transactions. Medium priority are items which populate the middle 50% of all transactions. Low priority items populate the lower 25% of alll transactions. The percentile may be subject to changing according to ABS' desired parameters, or other unexpected reasoning. (This variable may be subject to be moved to a tibble dedicated to observing itemid's by priority)
+
+```{r}
+set.seed(001)
+transaction_sample01 <- abs_observed |> #Sample of 1% each year with replacement
+  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
+  filter(lineqty > 0 | netamount > 0) |>
+  sample_frac(0.01)
+
+set.seed(005)
+transaction_sample05 <- abs_observed |> #Sample of 5% each year with replacement
+  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
+  filter(lineqty > 0 | netamount > 0) |>
+  sample_frac(0.05)
+
+set.seed(010)
+transaction_sample10 <- abs_observed |> #Sample of 10% each year with replacement
+  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
+  filter(lineqty > 0 | netamount > 0) |>
+  sample_frac(0.10)
+```
+
+For now I will be preparing other tibbles for creating a statistical model based on the variables **lineqty** and **netamount** to create the following variables:
+
+-   total_netamount: Created by taking the sum of netamount of one individual itemid collectively grouped by year and store
+-   total_lineqty: Created by taking the sum of lineqty of one individual itemid collectively grouped by year and store
+-   avg_cost: Created by taking the mean of netamount / lineqty of one individual itemid collectively grouped by year and store
+-   n_transactions: Created to count the frequency a given itemid appears in transactions per store and year
+-   priority: Refer to notes on variable above, created from total_netamount
+
+These variables will be created in two separate tibbles. The first tibble, **abs_var** will be for creating majority of the variables, with the exception of priority. And the second tibble **item_summary** will be used for creating the priority variable for use from here on out.
+
+```{r}
+abs_var <- abs_observed |>
+  group_by(year, itemid, description) |>
+  summarise(total_netamount = sum(netamount),
+            total_lineqty = sum(lineqty),
+            avg_cost = mean(netamount / lineqty),
+            n_transactions = n(),
+            .groups = "drop")
+
+q25 <- quantile(abs_var$total_netamount, 0.25, na.rm = TRUE)
+q75 <- quantile(abs_var$total_netamount, 0.75, na.rm = TRUE)
+```
+
+Now to create **item_summary** and the **priority** variable.
+
+```{r}
+item_summary <- abs_var |>
+  mutate(priority = case_when(
+    total_netamount >= q75 ~ "High",
+    total_netamount <= q25 ~ "Low",
+    TRUE ~ "Medium"))|>
+  mutate(priority = factor(priority, levels = c("High", "Medium", "Low")))
+
+item_summary <- item_summary |>
+  group_by(year, itemid) |>
+  summarise(priority = first(priority), .groups = "drop")
+
+item_summary |>
+  count(priority)
+```
+
+### Modeling Item Trends from 2023-2025 by Priority 
+
+I now want to observe the data to see trends in the velocity of merchandise per year on both a high level (observing all stores collectively), and on a local level (observing the stores individually). This is mostly meant to be a confirmation that the priority variable is not subject to any variability either between the years of 2023 to 2025 of between all 27 locations. This 
+
+(This section is still a work in progress)
+
+### Observing Priority Levels by Store Size and Total Sales
+
+Next I would like to observe the priority variable by store performance by using the store size and store financial performance variables **storesizecat** and **storetiercat**, comparing the two categories ABS currently use to observe the stores by Total sales using a variable named **store_total_sales**, I will also add in a variable to observe a store total line quantity just in case under the name **store_total_qty**. This will all be done under a new tibble named **store_totals**, then I will create another tibble named **priority_overlap** which I optimized for use to create my visualizations.
+
+```{r}
+store_totals <- abs_observed |>
+  group_by(store, storename, storesizecat, storetiercat) |>
+  summarise(store_total_sales = sum(netamount, na.rm = TRUE),
+            store_total_qty = sum(lineqty, na.rm = TRUE),
+            n_items_sold = n_distinct(itemid),
+            .groups = "drop")
+
+buffer <- abs_observed |>
+  select(year, store, storename, storesizecat,storetiercat, itemid, netamount) |>
+  left_join(item_summary |>
+              select(year, itemid, priority),
+            by = c("year", "itemid"))
+
+priority_overlap <- buffer |>
+  group_by(storesizecat, storetiercat, priority) |>
+  summarise(n_items = n_distinct(itemid),
+            total_sales = sum(netamount, na.rm = TRUE),
+            .groups = "drop")
+
+priority_overlap <- priority_overlap |>
+  group_by(storesizecat) |>
+  mutate(pct_sales = total_sales / sum(total_sales, na.rm = TRUE) * 100) |>
+  ungroup() |>
+  group_by(storetiercat)|>
+  mutate(pct_sales_tier = total_sales / sum(total_sales, na.rm = TRUE) * 100) |>
+  ungroup()
+
+priority_overlap$priority <- factor(priority_overlap$priority, levels = c("High", "Medium", "Low"))
+
+ggplot(priority_overlap, aes(x = storesizecat, y = total_sales, fill = priority)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Sales by Store Size and Item Priority",
+       x = "Store Size Category",
+       y = "Total Sales",
+       fill = "Item Priority",
+       caption = "Source: Montgomery County ABS") +
+  scale_fill_manual(values = c("High" = "limegreen", "Medium" = "lightblue", "Low" = "red")) +
+  theme_minimal()
+
+ggplot(priority_overlap, aes(x = storetiercat, y = total_sales, fill = priority)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Sales by Store Tier and Item Priority",
+       x = "Store Tier Category",
+       y = "Total Sales",
+       fill = "Item Priority",
+       caption = "Source: Montgomery County ABS") +
+  scale_fill_manual(values = c("High" = "limegreen", "Medium" = "lightblue", "Low" = "red")) +
+  theme_minimal()
+```
+
+As you can see, the item priority proportions appear to remain relatively the same regardless of store size or store performance. The only notable differences between the two are the total sales between both, which comes to no surprise as ABS has already noted the differences with their current buying patterns method.
+
+Now that we can see that priority remains consistent despite store size and performance, it is now time to focus more on statistical analysis of the priority variable and how its' performance can help better determine how ABS should replinish their inventory between all locations.
+
+## Inventory Management using the Priority Variable
+
+As it is becoming clear that inventory velocity appears to be unaffected by other categories, there are still other factors to consider such as:
+
+-   How to prioritize what merchandise goes where when each individual storefront has its' own parameters surrounding number of merchandise available to cutomers in store at any given moment?
+- How to handle already existing inventory that projects to move from one priority ranking to another?
+- How to handle new inventory?
+
+For resolving this, I will start by listing the average number of skus each individual store holds in their storefront at one time based on present day (11/3/2025).
+
+- **Silver Spring** (Store #2): 3546 SKUs
+- **Clarksburg Village** (Store #3): 4146 SKUs
+- **Westbard** (Store #4): 3773 SKUs
+- **Wheaton** (Store #5): 2878 SKUs
+- **Kingsview** (Store #6): 3454 SKUs
+- **Flower** (Store #7): 3386 SKUs
+- **Burtonsville** (Store #8): 3877 SKUs
+- **Muddy Branch** (Store #9): 4299 SKUs
+- **Cloverly** (Store #10): 3533 SKUs
+- **Walnut Hill** (Store #11): 3437 SKUs
+- **Cabin John** (Store #12): 3903 SKUs
+- **Leisure World** (Store #13): 3115 SKUs
+- **Kensington** (Store #14): 3630 SKUs
+- **Potomac** (Store #15): 3371 SKUs
+- **Seneca Meadows** (Store #16): 4060 SKUs
+- **Goshen Crossing** (Store #17): 3692 SKUs
+- **Olney** (Store #18): 2918 SKUs
+- **Darnestown** (Store #20): 3238 SKUs
+- **Fallsgrove** (Store #21): 2871 SKUs
+- **White Oak Town Center** (Store #22): 3118 SKUs
+- **Hampden Lane** (Store #23): 3404 SKUs
+- **Montrose** (Store #24): 3674 SKUs
+- **King Farm** (Store #26): 3341 SKUs
+- **Downtown Rockville** (Store #27): 4154 SKUs
+- **Aspen Hill** (Store #28): 4066 SKUs
+- **Poolesville** (Store #29): 1872 SKUs
+- **Gaithersburg** (Store #30): 3950 SKUs
+- **Placeholder** (Store #31): 207 SKUs
+
+As the size of the store no longer matters due to now looking specifically at the current average number of SKUs available in an individual storefront, it is best to only consider the ABS provided store classification group of financial performance (which is under the variable **storetiercat**). I have determined the following parameters for each tier (1 to 3) of store:
+
+- Tier 1 stores should be at minimum 55% high priority items, 30% medium priority items, and 15% low priority items
+- Tier 2 stores should be at minimum 75% high priority items, 20% medium priority items, and 5% low priority items
+- Tier 3 stores should be at minimum 85% high priority items, 15% medium priority items, and 0% low priority items
+
+This is a general basis to start from that can always be modified based on ABS' needs, however for the sake of making a baseline I will be referring to this outline. The reasoning for the outline is based on the idea that:
+
+- Tier 3 stores should not hold any merchandise that could be considered risky, prioritizing only merchandise that regularly perform either very well or generally well
+- Tier 2 stores should focus mainly on holding mostly high and medium priority merchandise, only considering low priority in these categories only if the store has a high quantity of SKUs available
+- Tier 1 stores has more flexibility, giving more option to expirement with new inventory (which would theoretically start at low priority) along with keeping available select top performing low priority items as long as additional storage is available at a given store
+
+### Priority Tier List Using SQL
+
+For this analysis, I will begin with using SQL to observe the ranking from highest to lowest for each priority to determine where to cut off for each given store based on its avaialble SKU count using **item_summary**.
+
+```{r,message=FALSE}
+abspriority.db <- dbConnect(RSQLite::SQLite(), ":memory:")
+copy_to(abspriority.db, item_summary)
+```
+
+
+
+(This section is a work in progress)
+
+
+
+
+
+

@@ -7,15 +7,15 @@ editor: visual
 
 # Purpose
 
-To determine a better methodology for observing the buying patterns between different locations, I would like to consider the potential demographic patterns in all corresponding locations to see if there are any major factors encouraging the purchases of merchandise such as:
+To determine a better methodology for observing the buying patterns between different locations, I will be observing the inventory of all locations for the following:
 
--   Sharp incline in purchase of specific merchandise due to seasonal events that will motivate such behavior including holidays, school (college) vacations, and work vacations
+-   Trends in inventory performance between all stores
 
--   Cultural bias (race, gender, religion)
+-   Determining if the current methodology which Alcohol and Beverage Services of Montgomery County (or ABS for short) uses for observing buying patterns is the best method
 
--   Socioeconomic bias (different purchasing patterns between different financial brackets)
+-   Using models to optimize the inventory management process either through ABS' current methodology, or a newly introduced model
 
-To do so, I would like to observe each of the following listed by gaining analytics as closely accurate as possible through data Montgomery to determine if there are any correlating factors occuring between the mentioned factors and the provided data set, holding over 12 million observations.
+To do so, I would like to observe the data set provided to me by ABS to locate any potential trends, determine best practices, and also engineer new variables if needed for modeling purposes.
 
 ## Stores to be Observed
 
@@ -49,32 +49,90 @@ For my observations, I will be researching information for the following locatio
 -   Wheaton (store 5)
 -   White Oak Town Center (store 22)
 
-It is also important to note that here are 3 tiers of designations for all 27 stores (Tiers A, B, and C) which is used to categorize the stores by their corresponding size:
+It is also important to note that there are 3 size designations for all 27 stores (Size A, B, and C) which is used to categorize the stores by their corresponding size:
 
--   Tier A is for stores with greater than 6000 sq ft
--   Tier B is for stores between 4000 and 6000 sq ft
--   Tier C is for stores below 4000 sq ft
+-   Size A is for stores with greater than 6000 sq ft
+-   Size B is for stores between 4000 and 6000 sq ft
+-   Size C is for stores below 4000 sq ft
 
-These designations are also categorized by their sale performance (based on a scale created in 2022) from rank 1 to 3 where:
+These designations are also categorized by their sales performance (based on a scale created in 2022) from tier 1 to 3 where:
 
--   Rank 1 is for stores performing greater than \$8 million in the SY
--   Rank 2 is for stores performing between \$5 and \$8 million in the SY
--   Rank 3 is for stores who perform less than \$5 million in the SY
+-   Tier 1 is for stores performing greater than \$8 million in the SY
+-   Tier 2 is for stores performing between \$5 and \$8 million in the SY
+-   Tier 3 is for stores who perform less than \$5 million in the SY
 
-So all 27 stores are identified by both a Tier and Rank. I have listed below every store with their corresponding Tiers and Rank in descending order:
+So all 27 stores are identified by both a Size and Tier. I have listed below every store with their corresponding Tiers and Rank in descending order:
 
-Tier ‘A’: - Seneca Meadows (Store #16) A1 - Muddy Branch (Store #09) A1 - Damestown (Store #20) A1 - Leisure World (Store #13) A2 - Kingsview (Store #06) A2 - Goshen Crossing (Store #17) A2 - Downtown Rockville (Store #27) A2 - Clarksburg Village (Store #03) A2 - Aspen Hill (Store #28) A2 - Gaithersburg (Store #30) A3 - Cloverly (Store #10) A3 Tier ‘B’: - Hampden Lane (Store #23) B1 - Kensington (Store #14) B1 - Montrose (Store #24) B1 - Westbard (Store #04) B1 - Silver Spring (Store #02) B2 - Walnut Hill (Store #11) B2 - Burtonsvile (Store #08) B3 - Cabin John (Store #12) B3 - White Oak Town Center (Store #22) B3 Tier ‘C’: - Potomac (Store #15) C1 - Olney (Store #18) C2 - Wheaton (Store #05) C2 - Fallsgrove (Store #21) C3 - Flower (Store #07) C3 - King Farm (Store #26) C3 - Poolesville (Store #29) C3
+Size ‘A’:
+
+\- Seneca Meadows (Store #16) A1
+
+\- Muddy Branch (Store #09) A1
+
+\- Damestown (Store #20) A1
+
+\- Leisure World (Store #13) A2
+
+\- Kingsview (Store #06) A2
+
+\- Goshen Crossing (Store #17) A2
+
+\- Downtown Rockville (Store #27) A2
+
+\- Clarksburg Village (Store #03) A2
+
+\- Aspen Hill (Store #28) A2
+
+\- Gaithersburg (Store #30) A3
+
+\- Cloverly (Store #10) A3
+
+Size ‘B’:
+
+\- Hampden Lane (Store #23) B1
+
+\- Kensington (Store #14) B1
+
+\- Montrose (Store #24) B1
+
+\- Westbard (Store #04) B1
+
+\- Silver Spring (Store #02) B2
+
+\- Walnut Hill (Store #11) B2
+
+\- Burtonsvile (Store #08) B3
+
+\- Cabin John (Store #12) B3
+
+\- White Oak Town Center (Store #22) B3
+
+Size ‘C’:
+
+\- Potomac (Store #15) C1
+
+\- Olney (Store #18) C2
+
+\- Wheaton (Store #05) C2
+
+\- Fallsgrove (Store #21) C3
+
+\- Flower (Store #07) C3
+
+\- King Farm (Store #26) C3
+
+\- Poolesville (Store #29) C3
 
 ## About the Data Set
 
-There are a total of 18 variables and roughly 12 million observations provided in the transactions data set provided by ABS, which I will provided a breakdown of below. However, there will also be additional variables that I will also include for this data set and will be using throughout this project which will be mentioned here.
+There are a total of 18 variables and roughly 12 million observations provided in the transactions data set provided by ABS, which I will provide a breakdown of below. However, there will also be additional variables that I will also include for this data set and will be using throughout this project which will be mentioned here.
 
 Variables originally included in the data set:
 
 -   transdate: This is the physical date that the transaction took place. ABS has provided transactions starting from July 1, 2023 to June 30, 2025 (roughly 2 years worth of data)
 -   transactionid: This is a unique identifier for each individual transaction (likely to not be used for this project)
 -   store: This is the store number where the transaction took place
--   storename: This is the formatted store name where the transaction tool place
+-   storename: This is the formatted store name where the transaction took place
 -   itemid: This is the unique identifier for products. Item dimension attributes do not change. If an item’s pack unit or bottles per case changes a new code is created.
 -   description: This is the product description
 -   netamount: This is the total cost of the line item / product purchased (discounts included) without tax
@@ -84,10 +142,10 @@ Variables originally included in the data set:
 -   itemtag: This is the warehouse designation inventory tag. Some items may be NULL as tags are updated on a daily basis and at the time this data set was taken offline, it may have converted some TAGS to NULL. (note that I will only be observing itemtags that identify as "ST", which is Standard Stock)
 -   tagdesc: This is the formatted description of the warehouse inventory tags
 -   classificationdepartment: This is the department the product belongs too (Level 1). The only departments are BEER, WINE, LIQ, MISC.
--   classifictiontype – This is the group type the product belongs too (Level 2). This references the type of product within the department. Ie: LIQ \> WHISKEY
--   classificationcategory – This is the group category the product belongs too (Level 3). This further references the category within the type of items. Ie LIQ \> WHISKEY \> IRISH WHISKEY.
+-   classifictiontype – This is the group type the product belongs too (Level 2). This references the type of product within the department. i.e.: LIQ \> WHISKEY
+-   classificationcategory – This is the group category the product belongs too (Level 3). This further references the category within the type of items. i.e.: LIQ \> WHISKEY \> IRISH WHISKEY.
 -   bottlespercase – This is the total number of bottles in a case. This is important for our warehouse partners when calculating overall case volume of an item. totalqty / bottlespercase = Case(s) sold
--   size: This is the size of the product. There are standard sizes of many products and often one size of a product will outperform another for a variety of reasons. Ie 750mL vs 1.75L
+-   size: This is the size of the product. There are standard sizes of many products and often one size of a product will outperform another for a variety of reasons. i.e. 750 mL vs 1.75 L
 -   custaccount: This designates if the transaction was for a retail/public customer or a licensee (This will only be used to filter out all licensee transactions as I will only be observing public customers)
 
 Variables added into the data set:
@@ -103,13 +161,20 @@ Variables added into the data set:
 Before beginning my analysis, I will be preparing my libraries, loading in my data set, and also doing all necessary cleaning below.
 
 ```{r,message=FALSE,warning=FALSE}
-library(MASS)
 library(tidyverse)
 library(DataExplorer)
 library(odbc)
 library(DBI)
 library(RSQLite)
+library(nnet)
 library(mgcv)
+library(caret)
+library(mlbench)
+library(MASS)
+library(rpart)
+library(randomForest)
+library(class)
+library(MLmetrics)
 ```
 
 ```{r,message=FALSE,warning=FALSE}
@@ -181,7 +246,7 @@ ggplot(abs_classdeptcount, aes(x = store, y = count,  fill = classificationdepar
   scale_x_continuous(breaks = seq(min(abs_classdeptcount$store), max(abs_classdeptcount$store), by = 1)) #To show ticks for every store
 ```
 
-From this it is clear that the liquor classification department dominates among all stores, with wine coming in second, beer in third, and miscellaneous last. Though this is not a major surprise, it does give a good basis on how generally every store (for the most part) follows the same popularity distribution of liquor \> Wine \> Beer \> Misc. There are a few outliers, like store 29 (Poolesville), which appears to only hold liquor sales. This may speak to why it is on the lowest scale of ABS' method of observing buying patterns (that being that this store is C3). Or it could be that due to the store previous low performance with inventory of other departments ABS has only made liquor available in said location. It is possible, though, that with further observation of the stores by classification will give more context.
+From this it is clear that the liquor classification department dominates among all stores, with wine coming in second, beer in third, and miscellaneous last. Though this is not a major surprise, it does give a good basis on how generally every store (for the most part) follows the same popularity distribution of liquor \> Wine \> Beer \> Misc. There are a few outliers, like store 29 (Poolesville), which appears to only hold liquor sales. This may speak to why it is on the lowest scale of ABS' method of observing buying patterns (that being that this store is catagorized as C3). Or it could be that due to the store's previous low performance with inventory of other departments ABS has only made liquor available in said location. It is possible, though, that with further observation of the stores by classification will give more context.
 
 Before doing any deeper research, I would like to see the performance of the top two performing classification departments: Liquor and Wine, both individually for all 27 locations and collectively to see if the top two performing departments share the same distribution patterns on the individual and collective level. This is to determine if there are any other anomalies among the stores that need to be noted. This will be done by creating another two tibbles, **abs_liquor** and **abs_wine**, where each will also include the **count** variable to accurately count the frequency for all transactions.
 
@@ -509,7 +574,7 @@ ggplot(abs_liquor, aes(x = classificationtype, y = count)) +
   scale_x_discrete(labels = function(x) str_wrap(x, width = 0))
 ```
 
-Generally, when observing liquor by classification type, the distributions all seem to be about the same, with slight differentiations. Thus it is safe to say that there is very little variation between all stores for the top performing classification department.
+Generally, when observing liquor by classification type, the distributions all seem to be about the same, with slight differentiation. Thus it is safe to say that there is very little variation between all stores for the top performing classification department.
 
 ### ABS Wine Distribution Results
 
@@ -944,47 +1009,289 @@ ORDER BY year, quantity DESC
 
 #### Results Overview
 
-Generally, all tiers appear to follow the same trends throughout all years and all levels of classifications. This further proves that inventory performance likely has little to do with store size as tier A, B, and C stores all share generally the same results from 2023-2025. To give a quick rundown of the results I will report the top 5 and lowest 5 performing on all three levels of classification for all three tiers of store size:
+Generally, all tiers appear to follow the same trends throughout all years and all levels of classifications. This further proves that inventory performance likely has little to do with store size as tier A, B, and C stores all share generally the same results from 2023-2025. To give a quick rundown of the results I will report the top 5 and lowest 5 performing items on all three levels of classification for all three tiers of store size:
 
 Classification Department
 
-• Tier A Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Miscellaneous • Donations • DLC (only in 2024 & 2025) • Non Inventory • Gift Card (only in 2023) • Tier B Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Misc • Donations • Non Inventory • Gift Card (only in 2023) • DLC (only in 2023 & 2025) • Tier C Stores • Top to lowest performing (2023-2025) • Liquor • Wine • Beer • Misc • Donations • Non Inventory • Gift Card (only in 2023) • DLC (only in 2023 & 2025)
+-   Tier A Stores
+    -   Top to lowest performing (2023-2025)
+        -   Liquor
+        -   Wine
+        -   Beer
+        -   Miscellaneous
+        -   Donations
+        -   DLC (only in 2024 & 2025)
+        -   Non Inventory
+        -   Gift Card (only in 2023)
+-   Tier B Stores
+    -   Top to lowest performing (2023-2025)
+        -   Liquor
+        -   Wine
+        -   Beer
+        -   Misc
+        -   Donations
+        -   Non Inventory
+        -   Gift Card (only in 2023)
+        -   DLC (only in 2023 & 2025)
+-   Tier C Stores
+    -   Top to lowest performing (2023-2025)
+        -   Liquor
+        -   Wine
+        -   Beer
+        -   Misc
+        -   Donations
+        -   Non Inventory
+        -   Gift Card (only in 2023)
+        -   DLC (only in 2023 & 2025)
 
 Classification Type
 
-• Tier A Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Whiskey • Bourbon • 2024 • Vodka • Tequila • Whiskey • Bourbon • Cordials • 2025 (thus far) • Vodka • Tequila • Whiskey • Bourbon • Cordials • Lowest 5 Performing: • 2023 • Soave • Pinotage • St. Emillion • Petite Syrah • IPA • 2024 • Petite Syrah • Grenache • Vermentino • Bordeaux • Agave • 2025 • Bordeaux • Torrontes • Other South African Red • Flavor Gin • Pinotage • (directly above is petite syrah, grenache, vermantino, and Agave) • Tier B Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Bourbon • Cordials • 2024 • Vodka • Tequila • Bourbon • Whiskey • Cordials • 2025 • Vodka • Tequila • Bourbon • Whiskey • Cordials • Lowest 5 Performing: • 2023 • Liebfraumilch • Bianco • St. Emillion • Grenache • Torrontes • 2024 • Vermentino • Other South African Red • Torrontes • Madeira • Bardolino • 2025 • Bardolino • Other South African Red • Flavor Gin • Grenache • Primitivo • Tier C Stores • Top 5 Performing: • 2023 • Vodka • NA(Values with no data) • Tequila • Whiskey • Bourbon • 2024 • Vodka • Tequila • Whiskey • Bourbon • Cordials • 2025 • Vodka • Tequila • Bourbon • Whiskey • Cordials • Lowest 5 Performing: • 2023 • Soave • Gamay • Pinotage • Miscast • Bianco • 2024 • Pinotage • Torrontes • Petite Syrah • Bardolino • Liebfraumilch • 2025 • Vermentino • Graves • Bardolino • Petite Syrah • Grenache
+-   Tier A Stores
+    -   Top 5 Performing:
+        -   2023
+            -   Vodka
+            -   NA(Values with no data)
+            -   Tequila
+            -   Whiskey
+            -   Bourbon
+        -   2024
+            -   Vodka
+            -   Tequila
+            -   Whiskey
+            -   Bourbon
+            -   Cordials
+        -   2025 (thus far)
+            -   Vodka
+            -   Tequila
+            -   Whiskey
+            -   Bourbon
+            -   Cordials
+    -   Lowest 5 Performing:
+        -   2023
+            -   Soave
+            -   Pinotage
+            -   St. Emillion
+            -   Petite Syrah
+            -   IPA
+        -   2024
+            -   Petite Syrah
+            -   Grenache
+            -   Vermentino
+            -   Bordeaux
+            -   Agave
+        -   2025
+            -   Bordeaux
+            -   Torrontes
+            -   Other South African Red
+            -   Flavor Gin
+            -   Pinotage
+            -   (directly above is petite syrah, grenache, vermantino, and Agave)
+-   Tier B Stores
+    -   Top 5 Performing:
+        -   2023
+            -   Vodka
+            -   NA(Values with no data)
+            -   Tequila
+            -   Bourbon
+            -   Cordials
+        -   2024
+            -   Vodka
+            -   Tequila
+            -   Bourbon
+            -   Whiskey
+            -   Cordials
+        -   2025
+            -   Vodka
+            -   Tequila
+            -   Bourbon
+            -   Whiskey
+            -   Cordials
+    -   Lowest 5 Performing:
+        -   2023
+            -   Liebfraumilch
+            -   Bianco
+            -   St. Emillion
+            -   Grenache
+            -   Torrontes
+        -   2024
+            -   Vermentino
+            -   Other South African Red
+            -   Torrontes
+            -   Madeira
+            -   Bardolino
+        -   2025
+            -   Bardolino
+            -   Other South African Red
+            -   Flavor Gin
+            -   Grenache
+            -   Primitivo
+-   Tier C Stores
+    -   Top 5 Performing:
+        -   2023
+            -   Vodka
+            -   NA(Values with no data)
+            -   Tequila
+            -   Whiskey
+            -   Bourbon
+        -   2024
+            -   Vodka
+            -   Tequila
+            -   Whiskey
+            -   Bourbon
+            -   Cordials
+        -   2025
+            -   Vodka
+            -   Tequila
+            -   Bourbon
+            -   Whiskey
+            -   Cordials
+    -   Lowest 5 Performing:
+        -   2023
+            -   Soave
+            -   Gamay
+            -   Pinotage
+            -   Miscast
+            -   Bianco
+        -   2024
+            -   Pinotage
+            -   Torrontes
+            -   Petite Syrah
+            -   Bardolino
+            -   Liebfraumilch
+        -   2025
+            -   Vermentino
+            -   Graves
+            -   Bardolino
+            -   Petite Syrah
+            -   Grenache
 
 Classification Category
 
-• Tier A Stores • Top 5 performing: • 2023 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2024 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2025 • Domestic Vodka • Tequila • American Red • American White • Straight Bourbon Whiskey • Lowest 5 Performing: • 2023 • French Red Wine • 1% Mixers • Malt Based RTD • Indian Whiskey • Greek • 2024 • Indian Whiskey • Sake • Alsatian Wine • Misc Agave Spirit • Greek • 2025 • Georgian Wine • Greek • Indian Whisky • Grappa • Armagnac • Tier B Stores • Top 5 Performing: • 2023 • Domestic Vodka • American Red • American White • Tequila • Straight Bourbon Whiskey • 2024 • Domestic Vodka • American Red • Tequila • American White • Straight Bourbon Whiskey • 2025 • Domestic Vodka • American Red • American White • Tequila • Straight Bourbon Whiskey • Lowest 5 Performing: • 2023 • Store Supplies • Grappa • Indian Whisky • Greek • 1% Mixers • 2024 • Wine Based Seltzers • Grappa • Greek • Indian Whisky • 1% Mixers • 2025 • Greek • Domestic Dessert Wine • 1% Mixers • Georgian Wine • Armagnac • Tier C Stores • Top 5 Performance: • 2023 • Domestic Vodka • American Red • Straight Bourbon Whiskey • Tequila • American White • 2024 • Domestic Vodka • American Red • Tequila • Straight Bourbon Whiskey • American White • 2025 • Domestic Vodka • American Red • Straight Bourbon Whiskey • Tequila • American White • Lowest 5 Performance: • 2023 • 1% Mixers • Indian Whisky • Domestic Dessert Wine • Store Supplies • Grappa • 2024 • Malt Based RTD • Domestic Dessert Wine • 1% Mixers • Sake • Grappa • 2025 • Store Supplies • Armagnac • Misc Agave Spirit • Georgian Wine • 1% Mixers
+-   Tier A Stores
+    -   Top 5 performing:
+        -   2023
+            -   Domestic Vodka
+            -   American Red
+            -   Tequila
+            -   American White
+            -   Straight Bourbon Whiskey
+        -   2024
+            -   Domestic Vodka
+            -   American Red
+            -   Tequila
+            -   American White
+            -   Straight Bourbon Whiskey
+        -   2025
+            -   Domestic Vodka
+            -   Tequila
+            -   American Red
+            -   American White
+            -   Straight Bourbon Whiskey
+    -   Lowest 5 Performing:
+        -   2023
+            -   French Red Wine
+            -   1% Mixers
+            -   Malt Based RTD
+            -   Indian Whiskey
+            -   Greek
+        -   2024
+            -   Indian Whiskey
+            -   Sake
+            -   Alsatian Wine
+            -   Misc Agave Spirit
+            -   Greek
+        -   2025
+            -   Georgian Wine
+            -   Greek
+            -   Indian Whisky
+            -   Grappa
+            -   Armagnac
+-   Tier B Stores
+    -   Top 5 Performing:
+        -   2023
+            -   Domestic Vodka
+            -   American Red
+            -   American White
+            -   Tequila
+            -   Straight Bourbon Whiskey
+        -   2024
+            -   Domestic Vodka
+            -   American Red
+            -   Tequila
+            -   American White
+            -   Straight Bourbon Whiskey
+        -   2025
+            -   Domestic Vodka
+            -   American Red
+            -   American White
+            -   Tequila
+            -   Straight Bourbon Whiskey
+    -   Lowest 5 Performing:
+        -   2023
+            -   Store Supplies
+            -   Grappa
+            -   Indian Whisky
+            -   Greek
+            -   1% Mixers
+        -   2024
+            -   Wine Based Seltzers
+            -   Grappa
+            -   Greek
+            -   Indian Whisky
+            -   1% Mixers
+            -   2025
+            -   Greek
+            -   Domestic Dessert Wine
+            -   1% Mixers
+            -   Georgian Wine
+            -   Armagnac
+-   Tier C Stores
+    -   Top 5 Performance:
+        -   2023
+            -   Domestic Vodka
+            -   American Red
+            -   Straight Bourbon Whiskey
+            -   Tequila
+            -   American White
+        -   2024
+            -   Domestic Vodka
+            -   American Red
+            -   Tequila
+            -   Straight Bourbon Whiskey
+            -   American White
+        -   2025
+            -   Domestic Vodka
+            -   American Red
+            -   Straight Bourbon Whiskey
+            -   Tequila
+            -   American White
+    -   Lowest 5 Performance:
+        -   2023
+            -   1% Mixers
+            -   Indian Whisky
+            -   Domestic Dessert Wine
+            -   Store Supplies
+            -   Grappa
+        -   2024
+            -   Malt Based RTD
+            -   Domestic Dessert Wine
+            -   1% Mixers
+            -   Sake
+            -   Grappa
+        -   2025
+            -   Store Supplies
+            -   Armagnac
+            -   Misc Agave Spirit
+            -   Georgian Wine
+            -   1% Mixers
 
 ## Observing the Data Set by Item ID
 
 Now that I have determined that the inventory generally performs the same among all stores, regardless of store size, it further proves that ABS' buying patterns methodology can be upgraded. My idea is for ABS to observe the data by the **itemid**, specifically for standard stock to prevent the variable becoming unusable as when switching from one **itemtag** to another, ABS must change the **itemid** even if it is the same item, so as to have a separate item id for its new tag designation. This is also why it was necessary for me to filter out all results in the main data set to show only standard stock, as this is the variable I will be mainly focusing on for this project. To give an idea of how necessary filtering the data is, before filtering out all transactions that were not standard stock, there were over 12 million observations, now there are roughly 9.7 million. That means that approximately 3 million transactions occur with items under a different item tag, which could likely be the same item under the standard stock, but with a different item id.
 
-To start off, I will be taking 3 samples of the main data set to used for my observation, using a stratified random sample method, grabbing first 10% of the data from each year from the main data set as one sample(named **transaction_sample10**), a 5% sample from each year as my second sample(named **transaction_sample05**), and a 1% sample from each year as my final sample(named **transaction_sample01**), all with replacement. The purpose of three different samples of different sizes is to observe any potential trends across the years and across all stores. I will be creating a new category for use to assist in my analysis named **priority** which I will further explain below:
+To start off, I will be creating a new category for use to assist in my analysis named **priority** which I will further explain below:
 
--   priority: This is an experimental variable for observing the itemid variable by frequency of transactions to determine if it is a "High", "Medium", or "Low" priority item. High priority merchandise are frequently purchased items in the upper 25% of all transactions. Medium priority are items which populate the middle 50% of all transactions. Low priority items populate the lower 25% of alll transactions. The percentile may be subject to changing according to ABS' desired parameters, or other unexpected reasoning. (This variable may be subject to be moved to a tibble dedicated to observing itemid's by priority)
-
-```{r}
-set.seed(001)
-transaction_sample01 <- abs_observed |> #Sample of 1% each year with replacement
-  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
-  filter(lineqty > 0 | netamount > 0) |>
-  sample_frac(0.01)
-
-set.seed(005)
-transaction_sample05 <- abs_observed |> #Sample of 5% each year with replacement
-  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
-  filter(lineqty > 0 | netamount > 0) |>
-  sample_frac(0.05)
-
-set.seed(010)
-transaction_sample10 <- abs_observed |> #Sample of 10% each year with replacement
-  group_by(year, store, storename, itemid, description, storesizecat, storetiercat) |>
-  filter(lineqty > 0 | netamount > 0) |>
-  sample_frac(0.10)
-```
+-   priority: This is an engineered variable for observing the itemid variable by frequency of transactions to determine if it is a "High", "Medium", or "Low" priority item. High priority merchandise are frequently purchased items in the upper 25 percentile of all transactions globally. Medium priority are items which populate the middle 50 percentile of all transactions. Low priority items populate the lower 25 percentile of all transactions. The percentile may be subject to changing according to ABS' desired parameters, or other unexpected reasoning. (This variable may be subject to be moved to a tibble dedicated to observing itemid's by priority)
 
 For now I will be preparing other tibbles for creating a statistical model based on the variables **lineqty** and **netamount** to create the following variables:
 
@@ -997,167 +1304,607 @@ For now I will be preparing other tibbles for creating a statistical model based
 These variables will be created in two separate tibbles. The first tibble, **abs_var** will be for creating majority of the variables, with the exception of priority. And the second tibble **item_summary** will be used for creating the priority variable for use from here on out.
 
 ```{r}
+#Updated to show priority for itemid globally for each year for predictive model
 abs_var <- abs_observed |>
   group_by(year, itemid, description) |>
-  summarise(total_netamount = sum(netamount),
-            total_lineqty = sum(lineqty),
-            avg_cost = mean(netamount / lineqty),
-            n_transactions = n(),
+  summarise(total_netamount = sum(netamount, na.rm = TRUE),
+            total_lineqty   = sum(lineqty, na.rm = TRUE),
+            avg_cost = mean(netamount / lineqty, na.rm = TRUE),
+            n_transactions  = n(),
             .groups = "drop")
-
-q25 <- quantile(abs_var$total_netamount, 0.25, na.rm = TRUE)
-q75 <- quantile(abs_var$total_netamount, 0.75, na.rm = TRUE)
-```
-
-Now to create **item_summary** and the **priority** variable.
-
-```{r}
 item_summary <- abs_var |>
-  mutate(priority = case_when(
-    total_netamount >= q75 ~ "High",
-    total_netamount <= q25 ~ "Low",
-    TRUE ~ "Medium"))|>
+  group_by(year) |>
+  mutate(q25 = quantile(n_transactions, 0.25, na.rm = TRUE),
+         q75 = quantile(n_transactions, 0.75, na.rm = TRUE),
+         priority = case_when(n_transactions >= q75 ~ "High",
+                              n_transactions <= q25 ~ "Low",
+                              TRUE ~ "Medium")) |>
+  ungroup() |>
   mutate(priority = factor(priority, levels = c("High", "Medium", "Low")))
 
-item_summary <- item_summary |>
-  group_by(year, itemid) |>
-  summarise(priority = first(priority), .groups = "drop")
-
-item_summary |>
-  count(priority)
+item_summary |> count(year, priority)
 ```
 
-### Modeling Item Trends from 2023-2025 by Priority 
+### Modeling Item Trends from 2023-2025 by Priority
 
-I now want to observe the data to see trends in the velocity of merchandise per year on both a high level (observing all stores collectively), and on a local level (observing the stores individually). This is mostly meant to be a confirmation that the priority variable is not subject to any variability either between the years of 2023 to 2025 of between all 27 locations. This 
+I now want to create a multinomial model based on the newly engineered **priority** variable which will use the information from the data set, separated by year, to both learn how to determine what priority any given item should be classified as, and also predict what priority an item will have for the following year based on the performance provided by transaction data. I will do this by creating a new tibble named **model_data** which collects all needed transaction information from **item_summary** along with two new variables included, 'next_priority' and next_year', for predictions of item priority for the following year.
 
-(This section is still a work in progress)
+```{r,warning=FALSE}
+#Create lagged dataset to model transitions using 2023 and 2024 transactions (predicting next year's priority)
 
-### Observing Priority Levels by Store Size and Total Sales
-
-Next I would like to observe the priority variable by store performance by using the store size and store financial performance variables **storesizecat** and **storetiercat**, comparing the two categories ABS currently use to observe the stores by Total sales using a variable named **store_total_sales**, I will also add in a variable to observe a store total line quantity just in case under the name **store_total_qty**. This will all be done under a new tibble named **store_totals**, then I will create another tibble named **priority_overlap** which I optimized for use to create my visualizations.
-
-```{r}
-store_totals <- abs_observed |>
-  group_by(store, storename, storesizecat, storetiercat) |>
-  summarise(store_total_sales = sum(netamount, na.rm = TRUE),
-            store_total_qty = sum(lineqty, na.rm = TRUE),
-            n_items_sold = n_distinct(itemid),
-            .groups = "drop")
-
-buffer <- abs_observed |>
-  select(year, store, storename, storesizecat,storetiercat, itemid, netamount) |>
-  left_join(item_summary |>
-              select(year, itemid, priority),
-            by = c("year", "itemid"))
-
-priority_overlap <- buffer |>
-  group_by(storesizecat, storetiercat, priority) |>
-  summarise(n_items = n_distinct(itemid),
-            total_sales = sum(netamount, na.rm = TRUE),
-            .groups = "drop")
-
-priority_overlap <- priority_overlap |>
-  group_by(storesizecat) |>
-  mutate(pct_sales = total_sales / sum(total_sales, na.rm = TRUE) * 100) |>
-  ungroup() |>
-  group_by(storetiercat)|>
-  mutate(pct_sales_tier = total_sales / sum(total_sales, na.rm = TRUE) * 100) |>
+item_transitions <- item_summary |>
+  arrange(itemid, year) |>
+  group_by(itemid) |>
+  mutate(next_priority = lead(priority),
+         next_year = lead(year)) |>
+  filter(!is.na(next_priority)) |> # Removes 2025 year data as no data follows
   ungroup()
 
-priority_overlap$priority <- factor(priority_overlap$priority, levels = c("High", "Medium", "Low"))
+# Join store characteristics for more context
 
-ggplot(priority_overlap, aes(x = storesizecat, y = total_sales, fill = priority)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Sales by Store Size and Item Priority",
-       x = "Store Size Category",
-       y = "Total Sales",
-       fill = "Item Priority",
-       caption = "Source: Montgomery County ABS") +
-  scale_fill_manual(values = c("High" = "limegreen", "Medium" = "lightblue", "Low" = "red")) +
-  theme_minimal()
+model_data <- item_transitions |>
+  left_join(abs_observed |>
+              select(itemid, store, storesizecat, storetiercat) |>
+              distinct(), by = "itemid")
 
-ggplot(priority_overlap, aes(x = storetiercat, y = total_sales, fill = priority)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Sales by Store Tier and Item Priority",
-       x = "Store Tier Category",
-       y = "Total Sales",
-       fill = "Item Priority",
-       caption = "Source: Montgomery County ABS") +
-  scale_fill_manual(values = c("High" = "limegreen", "Medium" = "lightblue", "Low" = "red")) +
-  theme_minimal()
 ```
 
-As you can see, the item priority proportions appear to remain relatively the same regardless of store size or store performance. The only notable differences between the two are the total sales between both, which comes to no surprise as ABS has already noted the differences with their current buying patterns method.
+```{r}
+priority_model <- nnet::multinom(next_priority ~ total_netamount + total_lineqty + avg_cost + n_transactions + storetiercat + storesizecat + year, data = model_data)
 
-Now that we can see that priority remains consistent despite store size and performance, it is now time to focus more on statistical analysis of the priority variable and how its' performance can help better determine how ABS should replinish their inventory between all locations.
+summary(priority_model)
 
-## Inventory Management using the Priority Variable
+```
+
+The purpose of this is for the model to track and learn the trends that create a high priority item versus a medium or low priority item using the variables provided. When the variable offers a positive coefficient tied to either medium or low, then it understands that the corresponding variable is likely to produce the given priority (medium or low, or both) when the given variable increases in number/amount. And when a variable offers negative coefficients for either medium or low, then it is stating that this variable is less likely to produce an item of said priority when the variable increases in number/amount. In the case of when both coefficients are negative, it is stating that high priority items are more likely produced when the corresponding variable increases in number/amount.
+
+According to that breakdown, the following results are:
+
+-   **total_netamount**: Produced negative coefficients for both medium and low, more likely to produce high priority items as net sales increase which is logical (proving the model is off to a good start)
+-   **total_lineqty**: Produced positive coefficients for both, which means that higher line quantity increases the odds of an item being medium or low priority vs high priority. This is an interesting observation according to the model, as it appears counter-intuitive, however it simply means that quantity alone is not a good enough predictor for whether an item will be high priority or not as high priority items have stronger net sales vs high volumes.
+-   **avg_cost**: Produced positive coefficients for both, meaning that higher cost items tend to become medium to low priority items. This is logical as higher cost items are less likely to be purchased.
+-   **n_transactions**: Produced negative coefficients for both, which comes to no surprise as the number of transactions a given item has directly correlates to the priority of an item, so high number = high priority
+-   **storetiercat**: Between two different storetiercat's (storetiercat2 and storetiercat3), showed mixed results with very little variation. This further proves that inventory velocity has very little to do with store tier (in other words a store's financial performance) as priority is mostly driven by item performance itself and is consistent across all store tiers.
+-   **Storesizecat**: The same as storetiercat, it offers very little variation meaning that an item's velocity is more independent than ABS' current buying patterns methodology, further ensuring the usefulness of the priority variable.
+-   **year**: The year variable shows both positive coefficients for medium and low showcasing that based on the data set (and based on the 2023 to 2024 performance), items are performing more poorly than the previous year (which is a part of ABS team's concern) as items are more likely to be medium or low priority as time progresses.
+
+In summary, the model shows that the total number of transactions and net sales amount are the strongest predictors of priority movement between years. Items with higher transaction counts and stronger net sales are much more likely to enter the high priority tier. Quantity sold on its own is not a reliable predictor and items with high physical volume can still fall into the medium or low tiers when net revenue does not match. Store size and store tier have only a minor influence which suggests that performance is driven by the product itself rather than the location. There is also a strong year effect that indicates priority classifications in 2024 were harder to reach compared to 2023 which may reflect broader changes in sales patterns.
+
+Next, I will be testing the model's performance to see how well it is able to predict a given item's priority level based on what the model was able to analyze.
+
+```{r}
+# Evaluate model performance
+
+preds <- predict(priority_model, newdata = model_data)
+confusion <- table(Predicted = preds, Actual = model_data$next_priority)
+confusion
+
+# Overall accuracy
+
+accuracy <- sum(diag(confusion)) / sum(confusion)
+accuracy
+
+```
+
+According to the results, the model predicted that 35,953 items would be high priority, 95,385 items would be medium priority, and 8578 items would be low priority. Based on the given predictions, the model has an accuracy of 82.598% or approximately 82.6%, showing that the model is relatively strong at predicting an items performance. Or in other words, more than eight times out of ten the model will accurately predict an items priority level in the next year to give better perspective. To give a breakdown of the models predictions:
+
+-   The model accurately predicted that 32,685 items would be high priority
+    -   3167 items that the model predicted to be high priority turned out to be medium priority
+    -   101 items that the model predicted to be high priority turned out to be low priority
+-   The model accurately predicted 76481 items to be medium priority
+    -   8186 items that the model predicted to be medium priority turned out to be high priority
+    -   10718 items that the model predicted to be medium priority turned out to be low priority
+-   The model accurately predicted 6402 items to be in the low priority
+    -   132 items that the model predicted to be low priority turned out to be high priority
+    -   2044 items that the model predicted to be low priority turned out to be medium priority
+
+In summary, the model achieved an accuracy of roughly 82 percent which shows that the predictors used for understanding future priority transitions are strong. The confusion matrix shows that the model performs very well when identifying high priority items and rarely mistakes low performers for strong ones. Most of the mis-classifications occur within the medium tier which is expected since it represents the largest portion of items and shares characteristics with both high and low tiers. The strong performance between the high and low categories suggests that the model can safely support decisions involving replenishment and inventory risk. This confirms that the quartile-based priority structure is statistically meaningful and can be used confidently when observing how items move across years.
+
+However, there are resounding concerns regarding other statistics, including a very high AIC score, which indicates that there are potential reliability concerns regarding how the multinomial model observes the variable.
+
+### Additional Modeling Method Testing
+
+Before moving forward, I want to address the concern with my original multinomial model **priority_model**. Currently there are some concerns regarding it's statistics, including a high AIC which indicates that there is too much noise in the data set itself despite its moderately high accuracy. As that is not something I would like to move forward with, I will be using a different method to observe my model_data, by first sectioning the data so that 80% of it is used for training the model and the remaining 20% for testing the model. I will also be creating a custom tibble used for observing the accuracy and F1 statistics of the models I will be creating. The goal is to determine the best modeling method to use for my final step. For this section I will be using the following modeling methods:
+
+-   Multinomial (using a different method)
+-   Linear Discriminate Analysis
+-   Decision Tree
+-   Random Forest
+-   K nearest Neighbors
+-   Artificial Neural Network
+
+```{r}
+# Modifying variables to ensure storesizecat and storetiercat are seen as categorical and year is seen as numerical
+model_data <- model_data |>
+  mutate(next_priority = factor(next_priority, levels = c("High", "Medium", "Low")),
+         storesizecat = factor(storesizecat),
+         storetiercat = factor(storetiercat),
+         year = as.numeric(year))
+
+set.seed(111)
+train_index <- caret::createDataPartition(model_data$next_priority, p = 0.80, list = FALSE) #Splitting the data so that 80% of the data goes to training and 20% goes to testing and to ensure priority stays balanced between both sets
+
+train_data <- model_data[train_index, ] #training data
+test_data <- model_data[-train_index, ] #testing data
+
+ctrl <- caret::trainControl(method = "cv", #fold cross validation aka it is repeatedly split internally during training
+                            number = 5, # number of folds
+                            classProbs = TRUE, #enables probability outputs
+                            summaryFunction = caret::multiClassSummary, #Gives statistics such as accuracy
+                            savePredictions = "final") #stores the best model's predictions for diagnostics
+
+priority_formula <- next_priority ~ total_netamount + total_lineqty + avg_cost + n_transactions + storetiercat + storesizecat + year #variables used for predicting the priority 
+```
+
+```{r}
+#custom F1 metric function for predictions
+multiclass_f1 <- function(cm_table){
+  
+  classes <- colnames(cm_table)
+  
+  per_class <- map_dfr(classes, function(cls){
+    tp <- cm_table[cls, cls] # correct predictions
+    fp <- sum(cm_table[, cls]) - tp #predicted the class but it was something else
+    fn <- sum(cm_table[cls, ]) - tp #actual class but it predicted something else
+    
+    precision <- ifelse(tp + fp == 0, NA, tp / (tp + fp)) #to determine how consistent the model is right 
+    recall <- ifelse(tp + fn == 0, NA, tp / (tp + fn)) #to determine out of all cases of a given priority, how often was caught by the model
+    f1 <- ifelse(is.na(precision + recall) | (precision + recall == 0),
+             NA, 2 * precision * recall / (precision + recall))
+    tibble(class = cls, precision = precision, recall = recall, f1 = f1, support = sum(cm_table[cls, ]))})
+  
+macro_f1 <- mean(per_class$f1, na.rm = TRUE) #mean of F1 across classes
+weighted_f1 <- weighted.mean(per_class$f1, w = per_class$support, na.rm = TRUE) # Weighted by number of items in a priority 
+
+list(per_class = per_class, macro_f1 = macro_f1, weighted_f1 = weighted_f1)}
+```
+
+#### Linear Discriminate Model
+
+```{r}
+set.seed(111)
+lda_model <- caret::train(priority_formula,
+                          data = train_data,
+                          method = "lda",
+                          trControl = ctrl,
+                          metric = "Accuracy")
+
+lda_model
+```
+
+```{r}
+lda_preds <- predict(lda_model, newdata = test_data)
+
+lda_cm <- caret::confusionMatrix(lda_preds, test_data$next_priority)
+
+lda_cm
+
+lda_f1 <- multiclass_f1(lda_cm$table)
+lda_f1$per_class
+lda_f1$macro_f1
+lda_f1$weighted_f1
+```
+
+#### Decision Tree Model
+
+```{r}
+set.seed(111)
+tree_model <- caret::train(priority_formula,
+                           data = train_data,
+                           method = "rpart",
+                           trControl = ctrl,
+                           tuneLength = 10,
+                           metric = "Accuracy")
+
+tree_model
+
+tree_preds <- predict(tree_model, newdata = test_data)
+
+tree_cm <- caret::confusionMatrix(tree_preds, test_data$next_priority)
+
+tree_cm
+
+tree_f1 <- multiclass_f1(tree_cm$table)
+tree_f1$per_class
+tree_f1$macro_f1
+tree_f1$weighted_f1
+```
+
+#### Random Forest Model
+
+```{r}
+set.seed(111)
+rf_model <- caret::train(priority_formula,
+                         data = train_data,
+                         method = "rf",
+                         trControl = ctrl,
+                         tuneLength = 5,
+                         metric = "Accuracy",
+                         importance = TRUE)
+
+rf_model
+
+rf_preds <- predict(rf_model, newdata = test_data)
+
+rf_cm <- caret::confusionMatrix(rf_preds, test_data$next_priority)
+rf_cm
+
+rf_f1 <- multiclass_f1(rf_cm$table)
+rf_f1$per_class
+rf_f1$macro_f1
+rf_f1$weighted_f1
+```
+
+#### K Nearest Neighbors Model
+
+```{r}
+set.seed(111)
+knn_model <- caret::train(priority_formula,
+                          data = train_data,
+                          method = "knn",
+                          trControl = ctrl,
+                          preProcess = c("center","scale"),
+                          tuneLength = 10,
+                          metric = "Accuracy")
+
+knn_model
+
+knn_preds <- predict(knn_model, newdata = test_data)
+
+knn_cm <- caret::confusionMatrix(knn_preds, test_data$next_priority)
+
+knn_cm
+
+knn_f1 <- multiclass_f1(knn_cm$table)
+knn_f1$per_class
+knn_f1$macro_f1
+knn_f1$weighted_f1
+
+```
+
+#### Multinomial Model (updated)
+
+```{r}
+set.seed(111)
+multinom_model <- nnet::multinom(priority_formula,
+                                 data = train_data,
+                                 MaxNWts = 20000,
+                                 trace = FALSE)
+
+multinom_preds <- predict(multinom_model, newdata = test_data)
+
+multinom_cm <- caret::confusionMatrix(data = multinom_preds,
+                                      reference = test_data$next_priority)
+
+multinom_cm
+
+multinom_f1 <- multiclass_f1(multinom_cm$table)
+
+multinom_f1$per_class
+multinom_f1$macro_f1
+multinom_f1$weighted_f1
+
+
+```
+
+#### Artificial Neural Networks Model
+
+```{r}
+set.seed(111)
+ann_model <- caret::train(priority_formula,
+                          data = train_data,
+                          method = "avNNet",
+                          trControl = ctrl,
+                          preProcess = c("center", "scale"),
+                          tuneLength = 5,
+                          metric = "Accuracy",
+                          trace = FALSE)
+
+ann_model
+
+# Predictions on test set
+ann_preds <- predict(ann_model, newdata = test_data)
+
+# Confusion matrix
+ann_cm <- caret::confusionMatrix(ann_preds, test_data$next_priority)
+
+ann_cm
+
+# F1 scores
+ann_f1 <- multiclass_f1(ann_cm$table)
+
+ann_f1$per_class
+ann_f1$macro_f1
+ann_f1$weighted_f1
+```
+
+#### Model Results
+
+```{r}
+#Creating a tibble to organize the resulting statistics from each model to compare
+model_results <- tibble(model = c("Multinomial", "LDA", "Decision Tree", "Random Forest", "KNN", "ANN"),
+                        accuracy = c(multinom_cm$overall["Accuracy"],
+                                     lda_cm$overall["Accuracy"],
+                                     tree_cm$overall["Accuracy"],
+                                     rf_cm$overall["Accuracy"],
+                                     knn_cm$overall["Accuracy"],
+                                     ann_cm$overall["Accuracy"]),
+                        macro_f1 = c(multinom_f1$macro_f1,
+                                     lda_f1$macro_f1,
+                                     tree_f1$macro_f1,
+                                     rf_f1$macro_f1,
+                                     knn_f1$macro_f1,
+                                     ann_f1$macro_f1),
+                        weighted_f1 = c(multinom_f1$weighted_f1,
+                                        lda_f1$weighted_f1,
+                                        tree_f1$weighted_f1,
+                                        rf_f1$weighted_f1,
+                                        knn_f1$weighted_f1,
+                                        ann_f1$weighted_f1))
+
+model_results
+```
+
+According to the tibble I created named **model_results** , the best model for predicting priority (when using the 7 mentioned variables to observe it) would be the Random Forest Model with an extremely high accuracy of 99.86% and a weighted F1 of 0.998 (very close to 1 which indicates high accuracy as well). So going forward I will only be utilizing the random forest model for the final step.
+
+## Inventory Management using the Random Forest Model
 
 As it is becoming clear that inventory velocity appears to be unaffected by other categories, there are still other factors to consider such as:
 
--   How to prioritize what merchandise goes where when each individual storefront has its' own parameters surrounding number of merchandise available to cutomers in store at any given moment?
-- How to handle already existing inventory that projects to move from one priority ranking to another?
-- How to handle new inventory?
+-   How to prioritize what merchandise goes where when each individual storefront has its' own parameters surrounding number of merchandise available to customers in store at any given moment?
+-   How to handle already existing inventory that projects to move from one priority ranking to another?
+-   How to handle new inventory?
 
-For resolving this, I will start by listing the average number of skus each individual store holds in their storefront at one time based on present day (11/3/2025).
+For resolving this, I will start by listing the average number of SKUs each individual store holds in their storefront at one time based on present day.
 
-- **Silver Spring** (Store #2): 3546 SKUs
-- **Clarksburg Village** (Store #3): 4146 SKUs
-- **Westbard** (Store #4): 3773 SKUs
-- **Wheaton** (Store #5): 2878 SKUs
-- **Kingsview** (Store #6): 3454 SKUs
-- **Flower** (Store #7): 3386 SKUs
-- **Burtonsville** (Store #8): 3877 SKUs
-- **Muddy Branch** (Store #9): 4299 SKUs
-- **Cloverly** (Store #10): 3533 SKUs
-- **Walnut Hill** (Store #11): 3437 SKUs
-- **Cabin John** (Store #12): 3903 SKUs
-- **Leisure World** (Store #13): 3115 SKUs
-- **Kensington** (Store #14): 3630 SKUs
-- **Potomac** (Store #15): 3371 SKUs
-- **Seneca Meadows** (Store #16): 4060 SKUs
-- **Goshen Crossing** (Store #17): 3692 SKUs
-- **Olney** (Store #18): 2918 SKUs
-- **Darnestown** (Store #20): 3238 SKUs
-- **Fallsgrove** (Store #21): 2871 SKUs
-- **White Oak Town Center** (Store #22): 3118 SKUs
-- **Hampden Lane** (Store #23): 3404 SKUs
-- **Montrose** (Store #24): 3674 SKUs
-- **King Farm** (Store #26): 3341 SKUs
-- **Downtown Rockville** (Store #27): 4154 SKUs
-- **Aspen Hill** (Store #28): 4066 SKUs
-- **Poolesville** (Store #29): 1872 SKUs
-- **Gaithersburg** (Store #30): 3950 SKUs
-- **Placeholder** (Store #31): 207 SKUs
+-   **Silver Spring** (Store #2): 3546 SKUs
+-   **Clarksburg Village** (Store #3): 4146 SKUs
+-   **Westbard** (Store #4): 3773 SKUs
+-   **Wheaton** (Store #5): 2878 SKUs
+-   **Kingsview** (Store #6): 3454 SKUs
+-   **Flower** (Store #7): 3386 SKUs
+-   **Burtonsville** (Store #8): 3877 SKUs
+-   **Muddy Branch** (Store #9): 4299 SKUs
+-   **Cloverly** (Store #10): 3533 SKUs
+-   **Walnut Hill** (Store #11): 3437 SKUs
+-   **Cabin John** (Store #12): 3903 SKUs
+-   **Leisure World** (Store #13): 3115 SKUs
+-   **Kensington** (Store #14): 3630 SKUs
+-   **Potomac** (Store #15): 3371 SKUs
+-   **Seneca Meadows** (Store #16): 4060 SKUs
+-   **Goshen Crossing** (Store #17): 3692 SKUs
+-   **Olney** (Store #18): 2918 SKUs
+-   **Darnestown** (Store #20): 3238 SKUs
+-   **Fallsgrove** (Store #21): 2871 SKUs
+-   **White Oak Town Center** (Store #22): 3118 SKUs
+-   **Hampden Lane** (Store #23): 3404 SKUs
+-   **Montrose** (Store #24): 3674 SKUs
+-   **King Farm** (Store #26): 3341 SKUs
+-   **Downtown Rockville** (Store #27): 4154 SKUs
+-   **Aspen Hill** (Store #28): 4066 SKUs
+-   **Poolesville** (Store #29): 1872 SKUs
+-   **Gaithersburg** (Store #30): 3950 SKUs
 
 As the size of the store no longer matters due to now looking specifically at the current average number of SKUs available in an individual storefront, it is best to only consider the ABS provided store classification group of financial performance (which is under the variable **storetiercat**). I have determined the following parameters for each tier (1 to 3) of store:
 
-- Tier 1 stores should be at minimum 55% high priority items, 30% medium priority items, and 15% low priority items
-- Tier 2 stores should be at minimum 75% high priority items, 20% medium priority items, and 5% low priority items
-- Tier 3 stores should be at minimum 85% high priority items, 15% medium priority items, and 0% low priority items
+-   Tier 1 stores should be at minimum 55% high priority items, 30% medium priority items, and 15% low priority items
+-   Tier 2 stores should be at minimum 75% high priority items, 20% medium priority items, and 5% low priority items
+-   Tier 3 stores should be at minimum 85% high priority items, 15% medium priority items, and 0% low priority items
 
 This is a general basis to start from that can always be modified based on ABS' needs, however for the sake of making a baseline I will be referring to this outline. The reasoning for the outline is based on the idea that:
 
-- Tier 3 stores should not hold any merchandise that could be considered risky, prioritizing only merchandise that regularly perform either very well or generally well
-- Tier 2 stores should focus mainly on holding mostly high and medium priority merchandise, only considering low priority in these categories only if the store has a high quantity of SKUs available
-- Tier 1 stores has more flexibility, giving more option to expirement with new inventory (which would theoretically start at low priority) along with keeping available select top performing low priority items as long as additional storage is available at a given store
+-   Tier 3 stores should not hold any merchandise that could be considered risky, prioritizing only merchandise that regularly perform either very well or generally well
+-   Tier 2 stores should focus mainly on holding mostly high and medium priority merchandise, only considering low priority in these categories if the store has a high quantity of SKUs available
+-   Tier 1 stores has more flexibility, giving more option to experiment with new inventory (which would theoretically start at low priority) along with keeping available select top performing low priority items as long as additional storage is available at a given store
 
-### Priority Tier List Using SQL
+First step is to build a prediction frame for the random forest model to use for predicting the inventory performance of the next year. (For this use case I will be using 2025 as the main data set does not have a complete record of that year to produce predictions for 2026). I will name this **prediction_frame**
 
-For this analysis, I will begin with using SQL to observe the ranking from highest to lowest for each priority to determine where to cut off for each given store based on its avaialble SKU count using **item_summary**.
-
-```{r,message=FALSE}
-abspriority.db <- dbConnect(RSQLite::SQLite(), ":memory:")
-copy_to(abspriority.db, item_summary)
+```{r}
+# Take latest year per item/store as basis
+prediction_frame <- model_data |>
+  group_by(store, itemid) |>
+  slice_tail(n = 1) |>  # use most recent stats
+  ungroup() |>
+  mutate(year = 2025)  # prediction year
 ```
 
+Now that the information has been gathered, I will use my random forest model to predict the priority of items for 2025
+
+```{r}
+prediction_frame$pred_priority <- predict(rf_model, newdata = prediction_frame)
+```
+
+Now, given that every store has a storefront SKU capacity, I need to create a new tibble which includes said information for each given store. I will name this **sku_capacity**
+
+```{r}
+sku_capacity <- tribble(~store, ~sku_limit,
+                        2, 3546,
+                        3, 4146,
+                        4, 3773,
+                        5, 2878,
+                        6, 3454,
+                        7, 3386,
+                        8, 3877,
+                        9, 4299,
+                        10, 3533,
+                        11, 3437,
+                        12, 3903,
+                        13, 3115,
+                        14, 3630,
+                        15, 3371,
+                        16, 4060,
+                        17, 3692,
+                        18, 2918,
+                        20, 3238,
+                        21, 2871,
+                        22, 3118,
+                        23, 3404,
+                        24, 3674,
+                        26, 3341,
+                        27, 4154,
+                        28, 4066,
+                        29, 1872,
+                        30, 3950)
+```
+
+Next, I will also be creating a tibble which includes all the rules mentioned previously regarding how I recommend organizing the stocking of items by priority for each store based on store tier. I will name this **priority_mix**
+
+```{r}
+priority_mix <- tribble(~storetiercat, ~high_pct, ~med_pct, ~low_pct,
+                        "1", 0.55, 0.30, 0.15,
+                        "2", 0.75, 0.20, 0.05,
+                        "3", 0.85, 0.15, 0.00)
+```
+
+Now to create an allocation function which will help with allocating the inventory based on priority, SKU count, and the rules created in **priority_mix** to help with producing a final table which provides all recommended inventory to stock for each store based on the model's predictions.
+
+```{r}
+allocate_items <- function(store_id) {
+  
+  store_df <- prediction_frame |> filter(store == store_id)
+  tcat <- unique(store_df$storetiercat)
+  scount <- sku_capacity |> filter(store == store_id) |> pull(sku_limit)
+  mix <- priority_mix |> filter(storetiercat == tcat)
+
+  high_needed   <- ceiling(scount * mix$high_pct)
+  medium_needed <- ceiling(scount * mix$med_pct)
+  low_needed    <- ceiling(scount * mix$low_pct)
+
+  store_df <- store_df |>
+    arrange(desc(n_transactions))  # best items first
+
+  high_items <- store_df |> filter(pred_priority == "High") |> slice_head(n = high_needed)
+  med_items  <- store_df |> filter(pred_priority == "Medium") |> slice_head(n = medium_needed)
+  low_items  <- store_df |> filter(pred_priority == "Low") |> slice_head(n = low_needed)
+
+  tibble(store = store_id,
+         storetiercat = tcat,
+         sku_limit = scount,
+         high_needed = high_needed,
+         medium_needed = medium_needed,
+         low_needed = low_needed,
+         recommended_high = list(high_items$itemid),
+         recommended_medium = list(med_items$itemid),
+         recommended_low = list(low_items$itemid),
+         year = 2025)}
+```
+
+Finally, I will create the table named **final_recommendtions** which provides what I would recommend to be stocked in each store in 2025 based on the model's predictions.
+
+```{r}
+final_recommendations <- map_dfr(unique(sku_capacity$store), allocate_items)
+```
+
+Now, I would like to produce a csv file from **final_recommendations** which extracts all information provided in the table in a cleanly formatted spreadsheet. To do so, I will first need to create a function to reformat the data provided from **final_recommendations** to create one final tibble named **final_recommendations_long** which has all recommended priorities for all stores prepared to be written into a csv file.
+
+```{r}
+clean_list <- function(vec){vec |> stringr::str_trim()}
+```
+
+```{r}
+final_recommendations_parsed <- final_recommendations |>
+  mutate(recommended_high   = map(recommended_high,   clean_list),
+         recommended_medium = map(recommended_medium, clean_list),
+         recommended_low    = map(recommended_low,    clean_list))
+```
+
+```{r}
+final_recommendations_long <- bind_rows(final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_high) |>
+    unnest_longer(recommended_high, values_to = "itemid") |>
+    mutate(priority = "High"),
+  
+  final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_medium) |>
+    unnest_longer(recommended_medium, values_to = "itemid") |>
+    mutate(priority = "Medium"),
+  
+  final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_low) |>
+    unnest_longer(recommended_low, values_to = "itemid") |>
+    mutate(priority = "Low")) |>
+  filter(itemid != "") |>
+  arrange(store, match(priority, c("High","Medium","Low")), itemid)
+```
+
+Now that I have cleaned the data provided by the model in preparation for the final produced spreadsheet, I would like to also include a validation summary as well to help summarize the following:
+
+-   Priority counts per store
+-   Fill-rate vs. SKU limit
+-   Compliance with Tier rules
+
+This will help with reporting and also may be useful to the ABS team. I will be naming the tibble **validation_table**
+
+```{r}
+priority_summary <- final_recommendations_long |>
+  count(store, storetiercat, priority, name = "priority_count") |>
+  pivot_wider(
+    names_from = priority,
+    values_from = priority_count,
+    values_fill = 0)
+
+priority_summary <- priority_summary |>
+  left_join(
+    final_recommendations |>
+      dplyr::select(store, sku_limit, year),
+    by = "store") |>
+  mutate(total_recommended = High + Medium + Low,
+         fill_rate = total_recommended / sku_limit)
+
+quota_rules <- tibble(storetiercat = factor(c("1", "2", "3"),
+                                            levels = levels(priority_summary$storetiercat)),
+                      min_high   = c(0.55, 0.75, 0.85),
+                      min_medium = c(0.30, 0.20, 0.15),
+                      min_low    = c(0.15, 0.05, 0.00))
 
 
-(This section is a work in progress)
+priority_summary <- priority_summary |>
+  left_join(quota_rules, by = "storetiercat")
 
+priority_summary <- priority_summary |>
+  mutate(pct_high   = High / total_recommended,
+         pct_medium = Medium / total_recommended,
+         pct_low    = Low / total_recommended,
+         meets_high   = pct_high   >= min_high,
+         meets_medium = pct_medium >= min_medium,
+         meets_low    = pct_low    >= min_low,
+         quota_pass = meets_high & meets_medium & meets_low)
 
+validation_table <- priority_summary |>
+  dplyr::select(store, storetiercat, sku_limit, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high, meets_medium, meets_low, quota_pass) |>
+  arrange(store)
+```
 
+Now that I have produced a prepared table, **final_recommendations_long**, along with a table to observe the quotas, **validation_table**, I would like to join the two and then produce a csv file as my final product for ABS.
 
+First I need to join the two tables:
 
+```{r}
+recommendations_with_validation <- final_recommendations_long |>
+  left_join(validation_table |>
+      dplyr::select(store, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high, meets_medium, meets_low, quota_pass),
+      by = "store")
+```
 
+And finally to produce the csv file:
+
+```{r}
+readr::write_csv(recommendations_with_validation, "ABS_Item_Recommendations_2025.csv")
+```
+
+## Final Remarks
+
+As of current, this is the final produced product I can offer, however there are a number of concerns that would need to be addressed, and I would have addressed given more time:
+
+-   The further I got into creating this product, the more I realized that my current ranking system for the priority of items is flawed. This becomes more apparent when creating a quota that the high priority items will never be able to fulfill for any store due to the limitations of the quantity. To resolve this I would:
+
+    -   Change the definition of high priority items by changing it from the top 25% performing items organization wide to either top 33%, top 40%, or even consider letting a random forest model help with predicting the priority of items based on performance (which personally I'd recommend the most).
+    -   Re calibrate the quotas I have created for all store tiers so that the amount of high priority items offer a more realistic percentage for each, making it more possible to fulfill.
+
+-   Include the quantity of an item I would recommend to each individual store, using the random forest model to assist with predicting the best amount based on SKU limitations
+
+-   Adjust the method that the model observes the data from a yearly perspective to a monthly perspective to get a more accurate perspective on inventory fulfillment.
+
+    -   Possibly even make it so that the random forest model would produce a new recommended list before every inventory fulfillment cycle so that each individual store could determine what it would need in their inventory based on inventory performance.
+
+Overall, I am certain that by using a random forest model to help with determining how Alcohol and Beverage Services of Montgomery County fulfill their inventory between all 27 locations, they will ultimately see more profit as there will be less inventory going to waste. My work is solely meant to lay the groundwork in creating the inventory ranking system, while also acknowledging how it can be improved in the future.

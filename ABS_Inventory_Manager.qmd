@@ -1,0 +1,301 @@
+---
+title: "ABS Inventory Management Product"
+author: "A Warsaw"
+format: html
+editor: visual
+---
+
+# ABS Inventory Manager
+
+This product uses a machine learning model to assist with recommending products that should be stocked in all 27 stores. I recommend reading the notes in chunks below and updating the necedssary information prior to running the chunks. To simplify the process. Please note that the first time running this program (and every time that the global environment is emptied) will take long. 
+
+Future updates to the inventory manager will include:
+
+- Updated priority ranking system based to ensure high priority quotas can be met (as of currently all stores will fail their quota due to impossible high priority quotas)
+- Updated inventory management criterion to assist with ensuring meeting quotas are possible
+- Recommended restock count for each given item to match a more realistic inventory list
+- Updated learning model using a quarterly/monthly basis instead of yearly to improve accuracy and utility
+
+## Setup
+
+Please run this chunk in order for all needed functions to properly run:
+
+```{r,message=FALSE,warning=FALSE}
+library(tidyverse)
+library(nnet)
+library(caret)
+```
+
+Next please load in the updated csv file below
+
+Before loading, if you need to update your working directory go to Session > Set Working Directory > Choose Directory 
+
+```{r,message=FALSE,warning=FALSE}
+abs_observed <- read_csv("TransactionData_UTF8.txt") # Replace "TransactionData_UTF8.txt" with the name of your csv file, ensure that you working directory is set to the correct location
+```
+
+Note: Please ensure that the formatting of the csv file is the same as the document that was originally provided, to ensure the future chunks run smoothly.
+
+Next, please run the next chunk for setting up the main data set:
+
+```{r, message=FALSE, warning=FALSE}
+stores_A <- c(03, 06, 09, 10, 13, 16, 17, 20, 27, 28, 30)
+stores_B <- c(02, 04, 08, 11, 12, 14, 22, 23, 24)
+stores_C <- c(05, 07, 15, 18, 21, 26, 29)
+tier1 <- c(04, 09, 14, 15, 16, 20, 23, 24)
+tier2 <- c(02, 03, 05, 06, 11, 13, 17, 18, 27, 28)
+tier3 <- c(07, 08, 10, 12, 21, 22, 26, 29, 30)
+
+names(abs_observed) <- tolower(names(abs_observed))
+abs_observed$store <- as.character(as.integer(abs_observed$store))
+abs_observed$store <- as.numeric(abs_observed$store)
+
+abs_observed <- abs_observed |>
+  filter(custaccount != "Licensee") |> 
+  filter(itemtag == "ST") |> 
+  mutate(storesizecat = case_when(
+  store %in% stores_A ~ "A",
+  store %in% stores_B ~ "B",
+  store %in% stores_C ~ "C",
+  TRUE ~ NA_character_)) |>
+  mutate(storetiercat = case_when(
+  store %in% tier1 ~ "1",
+  store %in% tier2 ~ "2",
+  store %in% tier3 ~ "3")) |>
+  filter(lineqty > 0 ) |> 
+  filter(netamount > 0) 
+
+abs_observed$cost <- abs_observed$netamount / abs_observed$lineqty
+abs_observed$transdate2 <- as.Date(abs_observed$transdate)
+abs_observed$year <- format(abs_observed$transdate2, "%Y")
+
+abs_var <- abs_observed |>
+  group_by(year, itemid, description) |>
+  summarise(total_netamount = sum(netamount, na.rm = TRUE),
+            total_lineqty   = sum(lineqty, na.rm = TRUE),
+            avg_cost = mean(netamount / lineqty, na.rm = TRUE),
+            n_transactions  = n(),
+            .groups = "drop")
+item_summary <- abs_var |>
+  group_by(year) |>
+  mutate(q25 = quantile(n_transactions, 0.25, na.rm = TRUE),
+         q75 = quantile(n_transactions, 0.75, na.rm = TRUE),
+         priority = case_when(n_transactions >= q75 ~ "High",
+                              n_transactions <= q25 ~ "Low",
+                              TRUE ~ "Medium")) |>
+  ungroup() |>
+  mutate(priority = factor(priority, levels = c("High", "Medium", "Low")))
+
+item_summary |> count(year, priority)
+
+item_transitions <- item_summary |>
+  arrange(itemid, year) |>
+  group_by(itemid) |>
+  mutate(next_priority = lead(priority),
+         next_year = lead(year)) |>
+  filter(!is.na(next_priority)) |> 
+  ungroup()
+
+model_data <- item_transitions |>
+  left_join(abs_observed |>
+              select(itemid, store, storesizecat, storetiercat) |>
+              distinct(), by = "itemid")
+
+model_data <- model_data |>
+  mutate(next_priority = factor(next_priority, levels = c("High", "Medium", "Low")),
+         storesizecat = factor(storesizecat),
+         storetiercat = factor(storetiercat),
+         year = as.numeric(year))
+
+set.seed(111)
+train_index <- caret::createDataPartition(model_data$next_priority, p = 0.80, list = FALSE) 
+
+train_data <- model_data[train_index, ]
+test_data <- model_data[-train_index, ]
+
+ctrl <- caret::trainControl(method = "cv", 
+                            number = 5,
+                            classProbs = TRUE,
+                            summaryFunction = caret::multiClassSummary, 
+                            savePredictions = "final") 
+
+priority_formula <- next_priority ~ total_netamount + total_lineqty + avg_cost + n_transactions + storetiercat + storesizecat + year 
+
+set.seed(111)
+rf_model <- caret::train(priority_formula,
+                         data = train_data,
+                         method = "rf",
+                         trControl = ctrl,
+                         tuneLength = 5,
+                         metric = "Accuracy",
+                         importance = TRUE)
+```
+
+## Important Chunks
+
+There will be notes in each chunk below that will need to be updated manually for the final output to come out as intended.
+
+```{r}
+prediction_frame <- model_data |>
+  group_by(store, itemid) |>
+  slice_tail(n = 1) |>
+  ungroup() |>
+  mutate(year = 2025)  # Please update the year to whatever year you would like the model to produce results for. Ensure that the data set has a full set of transactions from the year before your desired year or else it will effect the model's accuracy
+
+prediction_frame$pred_priority <- predict(rf_model, newdata = prediction_frame)
+```
+
+```{r}
+sku_capacity <- tribble(~store, ~sku_limit,
+                        2, 3546,
+                        3, 4146,
+                        4, 3773,
+                        5, 2878,
+                        6, 3454,
+                        7, 3386,
+                        8, 3877,
+                        9, 4299,
+                        10, 3533,
+                        11, 3437,
+                        12, 3903,
+                        13, 3115,
+                        14, 3630,
+                        15, 3371,
+                        16, 4060,
+                        17, 3692,
+                        18, 2918,
+                        20, 3238,
+                        21, 2871,
+                        22, 3118,
+                        23, 3404,
+                        24, 3674,
+                        26, 3341,
+                        27, 4154,
+                        28, 4066,
+                        29, 1872,
+                        30, 3950)
+
+# If any store number SKU updates are needed, please update the number next to the corresponding store number above to ensure accurate output
+
+priority_mix <- tribble(~storetiercat, ~high_pct, ~med_pct, ~low_pct,
+                        "1", 0.55, 0.30, 0.15,
+                        "2", 0.75, 0.20, 0.05,
+                        "3", 0.85, 0.15, 0.00)
+```
+
+```{r}
+allocate_items <- function(store_id) {
+  
+  store_df <- prediction_frame |> filter(store == store_id)
+  tcat <- unique(store_df$storetiercat)
+  scount <- sku_capacity |> filter(store == store_id) |> pull(sku_limit)
+  mix <- priority_mix |> filter(storetiercat == tcat)
+
+  high_needed   <- ceiling(scount * mix$high_pct)
+  medium_needed <- ceiling(scount * mix$med_pct)
+  low_needed    <- ceiling(scount * mix$low_pct)
+
+  store_df <- store_df |>
+    arrange(desc(n_transactions))
+
+  high_items <- store_df |> filter(pred_priority == "High") |> slice_head(n = high_needed)
+  med_items  <- store_df |> filter(pred_priority == "Medium") |> slice_head(n = medium_needed)
+  low_items  <- store_df |> filter(pred_priority == "Low") |> slice_head(n = low_needed)
+
+  tibble(store = store_id,
+         storetiercat = tcat,
+         sku_limit = scount,
+         high_needed = high_needed,
+         medium_needed = medium_needed,
+         low_needed = low_needed,
+         recommended_high = list(high_items$itemid),
+         recommended_medium = list(med_items$itemid),
+         recommended_low = list(low_items$itemid),
+         year = 2025)} # Change the year here to desired year 
+```
+
+In the following chunk you will not need to update anything, just run as is:
+
+```{r}
+final_recommendations <- map_dfr(unique(sku_capacity$store), allocate_items)
+
+clean_list <- function(vec){vec |> stringr::str_trim()}
+
+final_recommendations_parsed <- final_recommendations |>
+  mutate(recommended_high   = map(recommended_high,   clean_list),
+         recommended_medium = map(recommended_medium, clean_list),
+         recommended_low    = map(recommended_low,    clean_list))
+
+final_recommendations_long <- bind_rows(final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_high) |>
+    unnest_longer(recommended_high, values_to = "itemid") |>
+    mutate(priority = "High"),
+  
+  final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_medium) |>
+    unnest_longer(recommended_medium, values_to = "itemid") |>
+    mutate(priority = "Medium"),
+  
+  final_recommendations_parsed |>
+    dplyr::select(store, storetiercat, sku_limit, year, recommended_low) |>
+    unnest_longer(recommended_low, values_to = "itemid") |>
+    mutate(priority = "Low")) |>
+  filter(itemid != "") |>
+  arrange(store, match(priority, c("High","Medium","Low")), itemid)
+
+priority_summary <- final_recommendations_long |>
+  count(store, storetiercat, priority, name = "priority_count") |>
+  pivot_wider(
+    names_from = priority,
+    values_from = priority_count,
+    values_fill = 0)
+
+priority_summary <- priority_summary |>
+  left_join(
+    final_recommendations |>
+      dplyr::select(store, sku_limit, year),
+    by = "store") |>
+  mutate(total_recommended = High + Medium + Low,
+         fill_rate = total_recommended / sku_limit)
+
+quota_rules <- tibble(storetiercat = factor(c("1", "2", "3"),
+                                            levels = levels(priority_summary$storetiercat)),
+                      min_high   = c(0.55, 0.75, 0.85),
+                      min_medium = c(0.30, 0.20, 0.15),
+                      min_low    = c(0.15, 0.05, 0.00))
+
+
+priority_summary <- priority_summary |>
+  left_join(quota_rules, by = "storetiercat")
+
+priority_summary <- priority_summary |>
+  mutate(pct_high   = High / total_recommended,
+         pct_medium = Medium / total_recommended,
+         pct_low    = Low / total_recommended,
+         meets_high   = pct_high   >= min_high,
+         meets_medium = pct_medium >= min_medium,
+         meets_low    = pct_low    >= min_low,
+         quota_pass = meets_high & meets_medium & meets_low)
+
+validation_table <- priority_summary |>
+  dplyr::select(store, storetiercat, sku_limit, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high, meets_medium, meets_low, quota_pass) |>
+  arrange(store)
+
+recommendations_with_validation <- final_recommendations_long |>
+  left_join(validation_table |>
+      dplyr::select(store, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high, meets_medium, meets_low, quota_pass),
+      by = "store")
+```
+
+# Final Output
+
+Run the following chunk below to produce a csv file with all item recommendations based on desired year:
+
+```{r}
+readr::write_csv(recommendations_with_validation, "ABS_Item_Recommendations_2025.csv") 
+#Update the name "ABS_Item_Recommendations_2025.csv" with your desired name for the csv file if you would like
+```
+
+Note: upon running the chunk, the file will be saved in the working directory you have chose.
+
+

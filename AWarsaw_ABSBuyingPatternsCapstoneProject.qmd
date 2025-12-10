@@ -162,19 +162,10 @@ Before beginning my analysis, I will be preparing my libraries, loading in my da
 
 ```{r,message=FALSE,warning=FALSE}
 library(tidyverse)
-library(DataExplorer)
-library(odbc)
 library(DBI)
 library(RSQLite)
 library(nnet)
-library(mgcv)
 library(caret)
-library(mlbench)
-library(MASS)
-library(rpart)
-library(randomForest)
-library(class)
-library(MLmetrics)
 ```
 
 ```{r,message=FALSE,warning=FALSE}
@@ -1882,7 +1873,7 @@ First I need to join the two tables:
 ```{r}
 recommendations_with_validation <- final_recommendations_long |>
   left_join(validation_table |>
-      dplyr::select(store, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high, meets_medium, meets_low, quota_pass),
+      dplyr::select(store, total_recommended, fill_rate, pct_high, pct_medium, pct_low, meets_high,  meets_medium, meets_low, quota_pass),
       by = "store")
 ```
 
